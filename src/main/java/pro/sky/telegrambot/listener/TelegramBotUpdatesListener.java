@@ -39,12 +39,17 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - Start");
             });
 
+            commandMap.put(HELP, chatId -> {
+                        helpCommand(chatId, HELP);
+                    });
+
                     // Checking the message
                     if (update.message() != null && update.message().text() != null) {
                         String message = update.message().text();
                         long chatId = update.message().chat().id();
 
                         // Checking the command in HashMap
+                        // доработать
                         if (commandMap.containsKey(message)) {
                             commandMap.get(message).accept(chatId);
                         }
@@ -58,6 +63,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     // Command constants
     private static final String START = "/start";
+    private static final String HELP = "/help";
 
     // Сommands for the bot
     public void sendMessage(long chatId, String message) {
@@ -69,13 +75,20 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
        }
     }
 
-    public void startCommand(long chatId, String userName) {
+    public void startCommand(long chatId, String message) {
         String text = "Добро пожаловать в бот! \n" +
                 "\nИспользуйте команду - /help для дальнейшей инструкции!";
 
-        String formattedText = String.format(text, userName);
+        String formattedText = String.format(text, message);
         sendMessage(chatId, formattedText);
     }
 
+
+    public void helpCommand(long chatId, String message) {
+        String text = "helpo!";
+
+        String formattedText = String.format(text, message);
+        sendMessage(chatId, formattedText);
+    }
 
 }
