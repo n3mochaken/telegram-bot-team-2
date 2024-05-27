@@ -5,16 +5,19 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 public class Person {
-@Id
-@GeneratedValue
+
+    @Id
+    @GeneratedValue
     private Long personId;
+
     private Long chatId;
     private String phoneNumber;
     private boolean hasAnimal;
     private int reportCounter;
     private int reportsRequired;
 
-    public Person(Long personId, Long chatId, String phoneNumber, boolean hasAnimal, int reportCounter, int reportsRequired) {
+    public Person(Long personId, Long chatId, String phoneNumber, boolean hasAnimal,
+                  int reportCounter, int reportsRequired) {
         this.personId = personId;
         this.chatId = chatId;
         this.phoneNumber = phoneNumber;
@@ -23,7 +26,8 @@ public class Person {
         this.reportsRequired = reportsRequired;
     }
 
-    public Person(){}
+    public Person() {
+    }
 
     public Long getPersonId() {
         return personId;
@@ -78,7 +82,12 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return hasAnimal == person.hasAnimal && reportCounter == person.reportCounter && reportsRequired == person.reportsRequired && Objects.equals(personId, person.personId) && Objects.equals(chatId, person.chatId) && Objects.equals(phoneNumber, person.phoneNumber);
+        return hasAnimal == person.hasAnimal
+                && reportCounter == person.reportCounter
+                && reportsRequired == person.reportsRequired
+                && Objects.equals(personId, person.personId)
+                && Objects.equals(chatId, person.chatId)
+                && Objects.equals(phoneNumber, person.phoneNumber);
     }
 
     @Override
