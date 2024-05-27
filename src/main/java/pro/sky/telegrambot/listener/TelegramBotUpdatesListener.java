@@ -3,7 +3,6 @@ package pro.sky.telegrambot.listener;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import static pro.sky.telegrambot.constants.Constants.HELP;
-import static pro.sky.telegrambot.constants.Constants.START;
+import static pro.sky.telegrambot.constants.Constants.*;
 
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
@@ -46,9 +44,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - /start");
             });
 
-            commandMap.put(HELP, chatId -> {service.helpCommand(chatId, HELP);
+            commandMap.put(HELP, chatId -> {service.helpCommand(chatId);
                 logger.info("Command called - /help");
             });
+
+            commandMap.put(INFO, chatId -> {service.infoPr(chatId);
+                        logger.info("Command called - /info");
+            });
+
                     // Checking the message
                     if (update.message() != null && update.message().text() != null) {
                         String message = update.message().text();
