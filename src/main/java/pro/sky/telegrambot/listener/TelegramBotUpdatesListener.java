@@ -8,12 +8,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.service.ServiceCommand;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+
+import static pro.sky.telegrambot.constants.Constants.HELP;
+import static pro.sky.telegrambot.constants.Constants.START;
 
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
@@ -22,6 +26,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Autowired
     private TelegramBot bot;
+
+    @Autowired
+    private ServiceCommand service;
 
     @PostConstruct
     public void init() {
@@ -35,47 +42,25 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
             Map<String, Consumer<Long>> commandMap = new HashMap<>();
 
-            commandMap.put(START, chatId -> {startCommand(chatId, START);
-                logger.info("Command called - Start");
+            commandMap.put(START, chatId -> {service.startCommand(chatId, START);
+                logger.info("Command called - /start");
             });
 
+            commandMap.put(HELP, chatId -> {service.helpCommand(chatId, HELP);
+                logger.info("Command called - /help");
+            });
                     // Checking the message
                     if (update.message() != null && update.message().text() != null) {
                         String message = update.message().text();
                         long chatId = update.message().chat().id();
 
                         // Checking the command in HashMap
+                        // доработать
                         if (commandMap.containsKey(message)) {
                             commandMap.get(message).accept(chatId);
                         }
                     }
-
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
-
-    //--------------------------------------------------------------------
-
-    // Command constants
-    private static final String START = "/start";
-
-    // Сommands for the bot
-    public void sendMessage(long chatId, String message) {
-        SendMessage sendMessage = new SendMessage(chatId, message);
-       try {
-           bot.execute(sendMessage);
-       } catch (Exception e) {
-           logger.error("Error sending message", e);
-       }
-    }
-
-    public void startCommand(long chatId, String userName) {
-        String text = "Добро пожаловать в бот! \n" +
-                "\nИспользуйте команду - /help для дальнейшей инструкции!";
-
-        String formattedText = String.format(text, userName);
-        sendMessage(chatId, formattedText);
-    }
-
-
 }
