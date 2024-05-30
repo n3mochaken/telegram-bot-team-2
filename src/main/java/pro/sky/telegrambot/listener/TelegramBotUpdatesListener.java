@@ -28,29 +28,28 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Autowired
     private ServiceCommand service;
 
+    Map<String, Consumer<Long>> commandMap = new HashMap<>();
     @PostConstruct
     public void init() {
         bot.setUpdatesListener(this);
+
+        commandMap.put(START, chatId -> {service.startCommand(chatId);
+            logger.info("Command called - /start");
+        });
+
+        commandMap.put(HELP, chatId -> {service.helpCommand(chatId);
+            logger.info("Command called - /help");
+        });
+
+        commandMap.put(INFO, (chatId) -> {service.infoPr(chatId);
+            logger.info("Command called - /info");
+        });
     }
 
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
-
-            Map<String, Consumer<Long>> commandMap = new HashMap<>();
-
-            commandMap.put(START, chatId -> {service.startCommand(chatId, START);
-                logger.info("Command called - /start");
-            });
-
-            commandMap.put(HELP, chatId -> {service.helpCommand(chatId);
-                logger.info("Command called - /help");
-            });
-
-            commandMap.put(INFO, chatId -> {service.infoPr(chatId);
-                        logger.info("Command called - /info");
-            });
 
                     // Checking the message
                     if (update.message() != null && update.message().text() != null) {
@@ -62,6 +61,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                         if (commandMap.containsKey(message)) {
                             commandMap.get(message).accept(chatId);
                         }
+                    }
+
+                    if (update.callbackQuery() != null) {
+                        String callbackData = update.callbackQuery().data();
+                        long chatId = update.callbackQuery().message().chat().id();
+
+                         if (commandMap.containsKey(callbackData)) {
+                             commandMap.get(callbackData).accept(chatId);
+                         }
                     }
         });
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
