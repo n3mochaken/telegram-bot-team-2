@@ -6,7 +6,6 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
 import org.slf4j.Logger;
@@ -14,10 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
-
 import static pro.sky.telegrambot.constants.Constants.*;
-
-
 
 @Service
 public class ServiceCommand {
@@ -37,6 +33,7 @@ public class ServiceCommand {
             logger.error("Error sending message", e);
         }
     }
+
 
     public void startCommand(long chatId) {
         String text = "Привет!\n" +
@@ -58,9 +55,12 @@ public class ServiceCommand {
 
         // Тут много мата XD
 
+
     }
 
     public void infoPr(long chatId) {
+
+
 
         bot.execute(new SendMessage(chatId, "Здесь информация о приютах, которую вы хотите показать пользователю."));
     }
@@ -71,6 +71,10 @@ public class ServiceCommand {
 
     private Long getChatId(Message message){
             return message.chat().id();
+    }
+
+    private Long getChatId (Message message){
+        return message.chat().id();
     }
 }
 
