@@ -65,7 +65,7 @@ public class ServiceCommand {
     }
 
     private Long getChatId (Message message){
-            return message.chat().id();
+        return message.chat().id();
     }
 }
 
