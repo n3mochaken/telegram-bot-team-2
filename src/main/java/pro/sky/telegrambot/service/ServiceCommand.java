@@ -35,42 +35,26 @@ public class ServiceCommand {
     }
 
 
-    public void startCommand(long chatId) {
-        String text = "Привет!\n" +
-                "\nЯ бот приютитель, могу помочь тебе приютить животное." +
-                "\nУ меня есть вся подробная информация о процессе взаимодейсвия с приютами.";
-
-        sendMessage(chatId, text);
+    public void startCommand(Update update) {
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приютах").callbackData(INFO);
         keyboardMarkup.addRow(infoBtn);
 
-        SendMessage sendMessage1 = new SendMessage(chatId, "Выберите , что вам необходимо!");
-        sendMessage1.replyMarkup(keyboardMarkup);
-
-        bot.execute(sendMessage1);
-
-        // Доработаю!!!!
-
-        // Тут много мата XD
+        bot.execute(new SendMessage(getChatId(update.message()),
+                update.message().chat().firstName() + START_TEXT ).replyMarkup(keyboardMarkup));
 
 
     }
 
-    public void infoPr(long chatId) {
 
-
-
-        bot.execute(new SendMessage(chatId, "Здесь информация о приютах, которую вы хотите показать пользователю."));
-    }
-
-    public void helpCommand(long chatId) {
+    public void infoPr(Update update) {
+        bot.execute(new SendMessage(getChatId(update.message()), INFO_TEXT));
 
     }
 
-    private Long getChatId(Message message){
-            return message.chat().id();
+    private Long getChatId(Message message) {
+        return message.chat().id();
     }
 
     private Long getChatId (Message message){
