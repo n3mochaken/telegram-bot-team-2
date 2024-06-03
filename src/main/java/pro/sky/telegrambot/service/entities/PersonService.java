@@ -2,7 +2,6 @@ package pro.sky.telegrambot.service.entities;
 
 
 import com.pengrad.telegrambot.model.Update;
-import liquibase.pro.packaged.P;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
