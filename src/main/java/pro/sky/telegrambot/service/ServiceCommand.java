@@ -28,7 +28,7 @@ public class ServiceCommand {
     public void startCommand(Update update) {
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приютах").callbackData(INFO);
+        InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приютах").callbackData("testcallback");
         keyboardMarkup.addRow(infoBtn);
 
         bot.execute(new SendMessage(getChatId(update.message()),
@@ -37,10 +37,19 @@ public class ServiceCommand {
 
 
     public void infoPr(Update update) {
+        logger.info("Взван метод infoPr");
 
-        bot.execute(new SendMessage(update.message().chat().id(),
-                update.message().chat() + INFO_TEXT));
+        bot.execute(new SendMessage(update.callbackQuery().message().chat().id(), INFO_TEXT));
+        logger.info("КАЛЛБЭК ТЕКСТ "+ update.callbackQuery().data());
+
     }
+
+    public void getUserData (Update update){
+        logger.info("Взван метод getUserData");
+        Long chatId = update.message().chat().id();
+
+    }
+
 
     private Long getChatId(Message message) {
         return message.chat().id();
