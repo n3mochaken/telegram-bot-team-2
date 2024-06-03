@@ -12,17 +12,17 @@ public class Shelter {
     private Long shelterID;
     private String INFO = "INFO";
     private String NAME = "NAME";
-    private String ADRESS = "ADRESS";
+    private String ADDRESS = "ADDRESS";
     private String CONTACTS = "CONTACTS";
     private String RULES = "RULES";
     @OneToMany(mappedBy = "shelter")
     private Collection<Animal> animals;
 
-    public Shelter(Long shelterID, String INFO, String NAME, String ADRESS, String CONTACTS, String RULES) {
+    public Shelter(Long shelterID, String INFO, String NAME, String ADDRESS, String CONTACTS, String RULES) {
         this.shelterID = shelterID;
         this.INFO = INFO;
         this.NAME = NAME;
-        this.ADRESS = ADRESS;
+        this.ADDRESS = ADDRESS;
         this.CONTACTS = CONTACTS;
         this.RULES = RULES;
     }
@@ -54,12 +54,12 @@ public class Shelter {
         this.NAME = NAME;
     }
 
-    public String getADRESS() {
-        return ADRESS;
+    public String getADDRESS() {
+        return ADDRESS;
     }
 
-    public void setADRESS(String ADRESS) {
-        this.ADRESS = ADRESS;
+    public void setADDRESS(String ADDRESS) {
+        this.ADDRESS = ADDRESS;
     }
 
     public String getCONTACTS() {
@@ -83,12 +83,12 @@ public class Shelter {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Shelter shelter = (Shelter) o;
-        return Objects.equals(shelterID, shelter.shelterID) && Objects.equals(INFO, shelter.INFO) && Objects.equals(NAME, shelter.NAME) && Objects.equals(ADRESS, shelter.ADRESS) && Objects.equals(CONTACTS, shelter.CONTACTS) && Objects.equals(RULES, shelter.RULES);
+        return Objects.equals(shelterID, shelter.shelterID) && Objects.equals(INFO, shelter.INFO) && Objects.equals(NAME, shelter.NAME) && Objects.equals(ADDRESS, shelter.ADDRESS) && Objects.equals(CONTACTS, shelter.CONTACTS) && Objects.equals(RULES, shelter.RULES);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(shelterID, INFO, NAME, ADRESS, CONTACTS, RULES);
+        return Objects.hash(shelterID, INFO, NAME, ADDRESS, CONTACTS, RULES);
     }
 
     public Collection<Animal> getAnimals() {

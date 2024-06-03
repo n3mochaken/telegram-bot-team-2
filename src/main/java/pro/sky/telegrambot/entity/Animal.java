@@ -14,7 +14,9 @@ public class Animal {
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 
-
+    @OneToOne
+    @JoinColumn(name = "person_id")
+    private Person person;
 
 
     public Animal(Long animalId, String animalName, int animalAge) {
@@ -53,6 +55,7 @@ public class Animal {
     public Shelter getShelter (Shelter shelter){
         return shelter;
     }
+    public Person getPerson(Person person){return person;}
 
     @Override
     public boolean equals(Object o) {

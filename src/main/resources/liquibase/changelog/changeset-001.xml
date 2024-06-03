@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- ChangeSet для создания таблицы Shelter -->
+    <changeSet id="001-create-table-shelter" author="n.surzhikov">
+        <createTable tableName="shelter">
+            <column name="shelter_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="info" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="contacts" type="VARCHAR(255)"/>
+            <column name="rules" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ChangeSet для создания таблицы Animal -->
+    <changeSet id="002-create-table-animal" author="n.surzhikov">
+        <createTable tableName="animal">
+            <column name="animal_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="animal_name" type="VARCHAR(255)"/>
+            <column name="animal_age" type="INT"/>
+            <column name="shelter_id" type="BIGINT"/>
+            <column name="person_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- ChangeSet для создания таблицы Person -->
+    <changeSet id="003-create-table-person" author="n.surzhikov">
+        <createTable tableName="person">
+            <column name="person_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="chat_id" type="BIGINT"/>
+            <column name="phone_number" type="VARCHAR(255)"/>
+            <column name="animal_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+
+</databaseChangeLog>
