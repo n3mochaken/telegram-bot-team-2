@@ -55,6 +55,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             commandMap.put(INFO, chatId -> {service.infoPr(update);
                 logger.info("Command called - /info");
             });
+            commandMap.put(VOLUNTEER, chatId -> {service.volunteerCommand(update);
+                logger.info("Command called - /volunteer");
+            });
 
             commandMap.put("testcallback", chatId -> {service.infoPr(update);
                 logger.info("Command called - /info");
