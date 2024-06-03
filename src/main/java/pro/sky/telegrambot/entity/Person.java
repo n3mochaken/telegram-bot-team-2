@@ -12,6 +12,10 @@ public class Person {
     private Long chatId;
     private String phoneNumber;
 
+    @OneToOne
+    @JoinColumn(name = "animal_id")
+    private Animal animal;
+
     public Person(Long personId, Long chatId, String phoneNumber) {
         this.personId = personId;
         this.chatId = chatId;
