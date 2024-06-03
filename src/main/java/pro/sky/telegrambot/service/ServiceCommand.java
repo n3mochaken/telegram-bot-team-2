@@ -25,16 +25,6 @@ public class ServiceCommand {
 
     // Сommands for the bot
 
-    public void sendMessage(long chatId, String message) {
-        SendMessage sendMessage = new SendMessage(chatId, message);
-        try {
-            bot.execute(sendMessage);
-        } catch (Exception e) {
-            logger.error("Error sending message", e);
-        }
-    }
-
-
     public void startCommand(Update update) {
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
@@ -43,20 +33,17 @@ public class ServiceCommand {
 
         bot.execute(new SendMessage(getChatId(update.message()),
                 update.message().chat().firstName() + START_TEXT ).replyMarkup(keyboardMarkup));
-
-
     }
 
 
     public void infoPr(Update update) {
-        bot.execute(new SendMessage(getChatId(update.message()), INFO_TEXT));
 
+        bot.execute(new SendMessage(update.message().chat().id(),
+                update.message().chat() + INFO_TEXT));
     }
 
     private Long getChatId(Message message) {
         return message.chat().id();
     }
-
-
 }
 
