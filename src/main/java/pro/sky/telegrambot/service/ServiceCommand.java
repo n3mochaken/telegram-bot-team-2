@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.request.DeleteMessage;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.BaseResponse;
 import org.slf4j.Logger;
@@ -28,11 +29,19 @@ public class ServiceCommand {
     public void startCommand(Update update) {
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приютах").callbackData("testcallback");
-        keyboardMarkup.addRow(infoBtn);
 
-        bot.execute(new SendMessage(getChatId(update.message()),
-                update.message().chat().firstName() + START_TEXT ).replyMarkup(keyboardMarkup));
+        InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(VOLUNTEER);
+        InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приютах").callbackData(INFO);
+
+        keyboardMarkup.addRow(infoBtn);
+        keyboardMarkup.addRow(infoVolunteer);
+
+        SendMessage message = new SendMessage(update.message().chat().id(), START_TEXT);
+        message.replyMarkup(keyboardMarkup);
+        bot.execute(message);
+
+        DeleteMessage deleteMessage = new DeleteMessage(update.message().chat().id(), update.message().messageId());
+        BaseResponse response = bot.execute(deleteMessage);
     }
 
 
@@ -41,6 +50,12 @@ public class ServiceCommand {
 
         bot.execute(new SendMessage(update.callbackQuery().message().chat().id(), INFO_TEXT));
         logger.info("КАЛЛБЭК ТЕКСТ "+ update.callbackQuery().data());
+
+
+    }
+
+    public void volunteerCommand(Update update) {
+        bot.execute(new SendMessage(update.callbackQuery().message().chat().id(), VOLUNTEER_TEXT));
 
     }
 

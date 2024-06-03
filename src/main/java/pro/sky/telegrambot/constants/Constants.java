@@ -11,5 +11,9 @@ public class Constants {
     public static final String HELP = "/help";
 
     public static final String INFO = "/info";
-    public static final String INFO_TEXT = " ,Вот информация о приютах!";
+    public static final String INFO_TEXT = "Вот информация о приютах!";
+
+
+    public static final String VOLUNTEER = "/volunteer";
+    public static final String VOLUNTEER_TEXT = "Привет я педик!";
 }
