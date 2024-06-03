@@ -37,6 +37,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Override
     public int process(List<Update> updates) {
+
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
 
@@ -50,6 +51,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 }
             }
         });
+
         return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 
