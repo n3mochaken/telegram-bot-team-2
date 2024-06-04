@@ -14,8 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
+
 import static pro.sky.telegrambot.constants.Constants.*;
 
+/**
+ * Сервис реализующий команды Телеграм бота
+ *
+ */
 @Service
 public class ServiceCommand {
 
@@ -26,6 +31,11 @@ public class ServiceCommand {
 
     // Сommands for the bot
 
+    /**
+     * Стартует работу бота, предоставляет информацию о приютах и возможность вызова волонтера
+     *
+     * @param update данные от пользователя
+     */
     public void startCommand(Update update) {
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
@@ -49,17 +59,21 @@ public class ServiceCommand {
         logger.info("Взван метод infoPr");
 
         bot.execute(new SendMessage(update.callbackQuery().message().chat().id(), INFO_TEXT));
-        logger.info("КАЛЛБЭК ТЕКСТ "+ update.callbackQuery().data());
-
+        logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
     }
 
+    /**
+     * Вызов волонтера
+     *
+     * @param update данные от пользователя
+     */
     public void volunteerCommand(Update update) {
         bot.execute(new SendMessage(update.callbackQuery().message().chat().id(), VOLUNTEER_TEXT));
 
     }
 
-    public void getUserData (Update update){
+    public void getUserData(Update update) {
         logger.info("Взван метод getUserData");
         Long chatId = update.message().chat().id();
 
