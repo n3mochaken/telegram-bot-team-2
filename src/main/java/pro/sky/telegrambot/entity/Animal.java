@@ -1,6 +1,8 @@
 package pro.sky.telegrambot.entity;
+
 import javax.persistence.*;
 import java.util.Objects;
+
 @Entity
 public class Animal {
 
@@ -23,7 +25,7 @@ public class Animal {
         this.animalId = animalId;
         this.animalName = animalName;
         this.animalAge = animalAge;
-            }
+    }
 
     public Animal() {
     }
@@ -52,10 +54,13 @@ public class Animal {
         this.animalAge = animalAge;
     }
 
-    public Shelter getShelter (Shelter shelter){
+    public Shelter getShelter(Shelter shelter) {
         return shelter;
     }
-    public Person getPerson(Person person){return person;}
+
+    public Person getPerson(Person person) {
+        return person;
+    }
 
     @Override
     public boolean equals(Object o) {
