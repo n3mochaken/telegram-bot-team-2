@@ -22,6 +22,11 @@ import java.util.function.Consumer;
 
 import static pro.sky.telegrambot.constants.Constants.*;
 
+
+/**
+ * Основной класс для работы с Телеграм.
+ * Реализует интерфейс {@link UpdatesListener} для обработки обратного вызова с доступными обновлениями
+ */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
@@ -44,18 +49,30 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         bot.setUpdatesListener(this);
     }
 
+    /**
+     * Метод обратного вызова, вызываемый при обновлениях.
+     * Под обновлением подразумевается действие, совершённое с ботом — например, получение сообщения от пользователя.
+     * Метод обрабатывает полученные обновления и в зависимости от их типа (сообщение или обратный запрос от событий нажатия кнопок),
+     * отправляет на соответствующие обработчики
+     *
+     * @param updates доступные обновления
+     * @return {@code UpdatesListener.CONFIRMED_UPDATES_ALL = -1}
+     */
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
 
-            commandMap.put(START, chatId -> {service.startCommand(update);
+            commandMap.put(START, chatId -> {
+                service.startCommand(update);
                 logger.info("Command called - /start");
             });
-            commandMap.put(INFO, chatId -> {service.infoPr(update);
+            commandMap.put(INFO, chatId -> {
+                service.infoPr(update);
                 logger.info("Command called - /info");
             });
-            commandMap.put(VOLUNTEER, chatId -> {service.volunteerCommand(update);
+            commandMap.put(VOLUNTEER, chatId -> {
+                service.volunteerCommand(update);
                 logger.info("Command called - /volunteer");
             });
 

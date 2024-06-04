@@ -1,5 +1,7 @@
 package pro.sky.telegrambot.constants;
 
+
+
 public class Constants {
 
     // Command constants

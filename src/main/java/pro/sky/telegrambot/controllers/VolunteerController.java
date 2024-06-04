@@ -1,5 +1,6 @@
 package pro.sky.telegrambot.controllers;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,11 +9,13 @@ import pro.sky.telegrambot.service.VolunteerService;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/volunteer")
 public class VolunteerController {
     private final VolunteerService volunteerService;
-    public VolunteerController(VolunteerService volunteerService){
+
+    public VolunteerController(VolunteerService volunteerService) {
         this.volunteerService = volunteerService;
     }
 
