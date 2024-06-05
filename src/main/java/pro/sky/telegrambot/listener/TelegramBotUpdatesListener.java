@@ -62,7 +62,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             logger.info("Processing update: {}", update);
 
             commandMap.put(START_COMMAND, chatId -> {
-                service.startCommand(update);
+                service.welcomeMenu(update);
                 logger.info("Command called - /start");
             });
 //            commandMap.put(INFO_COMMAND, chatId -> {
@@ -73,18 +73,29 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 //                service.volunteerCommand(update);
 //                logger.info("Command called - /volunteer");
 //            });
-            commandMap.put(CALL_BACK_GET_FILE_GENERAL, chatId -> {
-                service.sendFileToUser(update);
-                logger.info("Command called - CALL_BACK_GET_FILE_GENERAL");
-            });
+//            commandMap.put(CALL_BACK_GET_FILE_GENERAL, chatId -> {
+//                service.sendFileToUser(update);
+//                logger.info("Command called - CALL_BACK_GET_FILE_GENERAL");
+//            });
             commandMap.put(CALL_BACK_FOR_INFO, chatId -> {
-                service.infoPr(update);
+                service.infoMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_INFO");
             });
             commandMap.put(CALL_BACK_FOR_VOLUNTEER, chatId -> {
                 service.volunteerCommand(update);
                 logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
             });
+
+            commandMap.put(CALL_BACK_FOR_START_MENU, chatId -> {
+                service.mainMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
+            });
+
+            commandMap.put(CALL_BACK_FOR_GENERAL_INFO_FILE, chatId -> {
+                service.sendFileToUser(update);
+                logger.info("Command called - CALL_BACK_FOR_GENERAL_INFO_FILE");
+            });
+
 
 
             if (update.message() != null && update.message().text() != null && update.message().chat() != null) {

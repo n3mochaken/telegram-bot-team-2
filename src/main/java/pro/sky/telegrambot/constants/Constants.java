@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.constants;
 
 
+import liquibase.pro.packaged.S;
 
 public class Constants {
 
@@ -9,6 +10,8 @@ public class Constants {
     public static final String START_TEXT = " Привет!\n" +
             "\nЯ бот приютитель, могу помочь тебе приютить животное." +
             "\nУ меня есть вся подробная информация о процессе взаимодейсвия с приютами.";
+
+    public static final String MAIN_MENU_TEXT = "Какая помощь тебе потребуется?";
 
     public static final String HELP_COMMAND = "/help";
 
@@ -23,5 +26,8 @@ public class Constants {
 
     public static final String CALL_BACK_FOR_INFO = "info";
     public static final String CALL_BACK_FOR_VOLUNTEER = "volunteer";
+    public static final String CALL_BACK_FOR_MAIN_MENU = "mainMenu";
+    public static final String CALL_BACK_FOR_START_MENU = "mainMenu";
+    public static final String CALL_BACK_FOR_GENERAL_INFO_FILE = "generalInfo.pdf";
 
 }
