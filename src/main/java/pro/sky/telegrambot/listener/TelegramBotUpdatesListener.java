@@ -32,10 +32,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Autowired
     private TelegramBot bot;
+
     @Autowired
     private PersonRepository personRepository;
+
     @Autowired
-    PersonService personService;
+    private PersonService personService;
 
     @Autowired
     private ServiceCommand service;
@@ -69,10 +71,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 //                service.infoPr(update);
 //                logger.info("Command called - /info");
 //            });
-//            commandMap.put(VOLUNTEER_COMMAND, chatId -> {
-//                service.volunteerCommand(update);
-//                logger.info("Command called - /volunteer");
-//            });
 //            commandMap.put(CALL_BACK_GET_FILE_GENERAL, chatId -> {
 //                service.sendFileToUser(update);
 //                logger.info("Command called - CALL_BACK_GET_FILE_GENERAL");
@@ -81,12 +79,13 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 service.infoMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_INFO");
             });
+
             commandMap.put(CALL_BACK_FOR_VOLUNTEER, chatId -> {
                 service.volunteerCommand(update);
                 logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
             });
 
-            commandMap.put(CALL_BACK_FOR_START_MENU, chatId -> {
+            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
                 service.mainMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
             });
@@ -96,7 +95,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - CALL_BACK_FOR_GENERAL_INFO_FILE");
             });
 
+            commandMap.put(CALL_BACK_FOR_CONSULTATION, chatId -> {
+                service.consultationMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_CONSULTATION");
+            });
 
+            commandMap.put(CALL_BACK_FOR_RECOMMENDATIONS, chatId -> {
+                service.recommendationsMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_RECOMMENDATIONS");
+            });
 
             if (update.message() != null && update.message().text() != null && update.message().chat() != null) {
                 personService.createPerson(update);
@@ -117,7 +124,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (commandMap.containsKey(callbackData)) {
                     logger.info("Мы получили апдейт, колбэк есть в мапе");
                     commandMap.get(callbackData).accept(chatId);
-
                 }
             }
         });
