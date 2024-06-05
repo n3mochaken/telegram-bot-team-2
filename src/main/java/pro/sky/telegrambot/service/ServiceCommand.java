@@ -168,7 +168,6 @@ public class ServiceCommand {
         Long chatId = update.message().chat().id();
     }
 
-
     private Long getChatId(Message message) {
         return message.chat().id();
     }
