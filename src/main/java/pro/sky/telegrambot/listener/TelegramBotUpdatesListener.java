@@ -4,12 +4,10 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.entity.Person;
 import pro.sky.telegrambot.repository.PersonRepository;
 import pro.sky.telegrambot.service.ServiceCommand;
 import pro.sky.telegrambot.service.entities.PersonService;
@@ -22,6 +20,11 @@ import java.util.function.Consumer;
 
 import static pro.sky.telegrambot.constants.Constants.*;
 
+
+/**
+ * Основной класс для работы с Телеграм.
+ * Реализует интерфейс {@link UpdatesListener} для обработки обратного вызова с доступными обновлениями
+ */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
 
@@ -44,27 +47,54 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
         bot.setUpdatesListener(this);
     }
 
+    /**
+     * Метод обратного вызова, вызываемый при обновлениях.
+     * Под обновлением подразумевается действие, совершённое с ботом — например, получение сообщения от пользователя.
+     * Метод обрабатывает полученные обновления и в зависимости от их типа (сообщение или обратный запрос от событий нажатия кнопок),
+     * отправляет на соответствующие обработчики
+     *
+     * @param updates доступные обновления
+     * @return {@code UpdatesListener.CONFIRMED_UPDATES_ALL = -1}
+     */
     @Override
     public int process(List<Update> updates) {
         updates.forEach(update -> {
             logger.info("Processing update: {}", update);
 
-            commandMap.put(START, chatId -> {service.startCommand(update);
+            commandMap.put(START_COMMAND, chatId -> {
+                service.welcomeMenu(update);
                 logger.info("Command called - /start");
             });
-            commandMap.put(INFO, chatId -> {service.infoPr(update);
-                logger.info("Command called - /info");
+//            commandMap.put(INFO_COMMAND, chatId -> {
+//                service.infoPr(update);
+//                logger.info("Command called - /info");
+//            });
+//            commandMap.put(VOLUNTEER_COMMAND, chatId -> {
+//                service.volunteerCommand(update);
+//                logger.info("Command called - /volunteer");
+//            });
+//            commandMap.put(CALL_BACK_GET_FILE_GENERAL, chatId -> {
+//                service.sendFileToUser(update);
+//                logger.info("Command called - CALL_BACK_GET_FILE_GENERAL");
+//            });
+            commandMap.put(CALL_BACK_FOR_INFO, chatId -> {
+                service.infoMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_INFO");
             });
-            commandMap.put(VOLUNTEER, chatId -> {service.volunteerCommand(update);
-                logger.info("Command called - /volunteer");
+            commandMap.put(CALL_BACK_FOR_VOLUNTEER, chatId -> {
+                service.volunteerCommand(update);
+                logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
             });
 
-            commandMap.put("testcallback", chatId -> {service.infoPr(update);
-                logger.info("Command called - /info");
+            commandMap.put(CALL_BACK_FOR_START_MENU, chatId -> {
+                service.mainMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
             });
 
-
-
+            commandMap.put(CALL_BACK_FOR_GENERAL_INFO_FILE, chatId -> {
+                service.sendFileToUser(update);
+                logger.info("Command called - CALL_BACK_FOR_GENERAL_INFO_FILE");
+            });
 
 
 
@@ -79,7 +109,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 }
             }
             if (update.callbackQuery() != null) {
-
                 logger.info("Мы получили апдейт, колбэн не нулл");
                 CallbackQuery callbackQuery = update.callbackQuery();
                 String callbackData = callbackQuery.data();
