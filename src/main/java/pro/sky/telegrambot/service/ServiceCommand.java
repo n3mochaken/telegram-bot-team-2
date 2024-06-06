@@ -100,11 +100,13 @@ public class ServiceCommand {
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+
         InlineKeyboardButton infoBtn1 = new InlineKeyboardButton("Как проехать").callbackData(CALL_BACK_FOR_ADDRESS);
         InlineKeyboardButton infoBtn2 = new InlineKeyboardButton("Контактные данные для оформления пропуска").callbackData(CALL_BACK_FOR_CONTACTS);
         InlineKeyboardButton infoBtn3 = new InlineKeyboardButton("Техника безопасности на территории приюта").callbackData(CALL_BACK_FOR_SAFETY_RULES);
         InlineKeyboardButton infoBtn4 = new InlineKeyboardButton("Расписание работы приюта").callbackData(CALL_BACK_FOR_TIMING);
         InlineKeyboardButton infoBtn5 = new InlineKeyboardButton("Получить консультацию").callbackData(CALL_BACK_FOR_INFO);
+
         InlineKeyboardButton infoBtn6 = new InlineKeyboardButton("Вызвать волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
         InlineKeyboardButton infoBtn7 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
@@ -135,10 +137,107 @@ public class ServiceCommand {
      * @param update данные от пользователя
      */
     public void volunteerCommand(Update update) {
-        bot.execute(new SendMessage(update.callbackQuery().message().chat().id(), VOLUNTEER_TEXT));
+
+        logger.info("Взван метод volunteer");
+
+        Long chatId = update.callbackQuery().message().chat().id();
+        Integer messageId = update.callbackQuery().message().messageId();
+
+        logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
+
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        keyboardMarkup.addRow(infoVolunteer);
+
+        logger.info("сделал клаву");
+
+        bot.execute(new EditMessageText(chatId,messageId,VOLUNTEER_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+
+        logger.info("отправил месагу");
+
     }
 
-    public void sendFileToUser (Update update){
+    public void consultationMenu(Update update) {
+        logger.info("Запущен метод Consultation");
+
+        long chatId = update.callbackQuery().message().chat().id();
+        Integer messageId = update.callbackQuery().message().messageId();
+
+        logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
+
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton consultationBtn1 = new InlineKeyboardButton("Посмотреть животных").callbackData(CALL_BACK_FOR_LOOK_ANIMAL);
+        InlineKeyboardButton consultationBtn2 = new InlineKeyboardButton("Правила знакомства с животным").callbackData(CALL_BACK_FOR_RULES_AND_SHELTER);
+        InlineKeyboardButton consultationBtn3 = new InlineKeyboardButton("Список документов").callbackData(CALL_BACK_FOR_LIST_DOCUMENTS);
+        InlineKeyboardButton consultationBtn4 = new InlineKeyboardButton("Причины отказа").callbackData(CALL_BACK_FOR_REASONS_FOR_REFUSAL);
+        InlineKeyboardButton consultationBtn5 = new InlineKeyboardButton("Посмотреть животных").callbackData(CALL_BACK_FOR_RECORD_CONTACTS);
+        InlineKeyboardButton consultationBtn6 = new InlineKeyboardButton("Рекомендации").callbackData(CALL_BACK_FOR_RECOMMENDATIONS);
+
+        InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
+
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+
+        keyboardMarkup.addRow(consultationBtn1);
+        keyboardMarkup.addRow(consultationBtn2);
+        keyboardMarkup.addRow(consultationBtn3);
+        keyboardMarkup.addRow(consultationBtn4);
+        keyboardMarkup.addRow(consultationBtn5);
+        keyboardMarkup.addRow(consultationBtn6);
+        keyboardMarkup.addRow(infoVolunteer);
+        keyboardMarkup.addRow(returnMainMenu);
+
+        logger.info("сделал кнопки в ряд");
+
+        logger.info("сделал клаву");
+
+        bot.execute(new EditMessageText(chatId,messageId,CONSULTATION_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+
+        logger.info("отправил месагу");
+    }
+
+    public void recommendationsMenu(Update update) {
+        logger.info("Запущен метод Recommendations");
+
+        long chatId = update.callbackQuery().message().chat().id();
+        Integer messageId = update.callbackQuery().message().messageId();
+
+        logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
+
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton consultationBtn1 = new InlineKeyboardButton("Транспортировке животного").callbackData(CALL_BACK_FOR_TRANSPORTATION_RECOMMENDATIONS);
+        InlineKeyboardButton consultationBtn2 = new InlineKeyboardButton("Обустройству дома для щенка").callbackData(CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_PUPPY);
+        InlineKeyboardButton consultationBtn3 = new InlineKeyboardButton("Обустройству дома для взрослого").callbackData(CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_ADULT_PUPPY);
+        InlineKeyboardButton consultationBtn4 = new InlineKeyboardButton("С ограниченными возможностями").callbackData(CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_DISABLED);
+        InlineKeyboardButton consultationBtn5 = new InlineKeyboardButton("Советы от кинолога").callbackData(CALL_BACK_FOR_ADVICE_DOG_HANDLER);
+        InlineKeyboardButton consultationBtn6 = new InlineKeyboardButton("Проверянные кинологи").callbackData(CALL_BACK_FOR_PROVEN_DOG_HANDLERS);
+
+        InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
+
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+
+        keyboardMarkup.addRow(consultationBtn1);
+        keyboardMarkup.addRow(consultationBtn2);
+        keyboardMarkup.addRow(consultationBtn3);
+        keyboardMarkup.addRow(consultationBtn4);
+        keyboardMarkup.addRow(consultationBtn5);
+        keyboardMarkup.addRow(consultationBtn6);
+        keyboardMarkup.addRow(infoVolunteer);
+        keyboardMarkup.addRow(returnMainMenu);
+
+        logger.info("сделал кнопки в ряд");
+
+        logger.info("сделал клаву");
+
+        bot.execute(new EditMessageText(chatId,messageId,RECOMMENDATIONS));
+        bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+
+        logger.info("отправил месагу");
+
+    }
+
+    public void sendFileToUser(Update update){
 
         logger.info("Запущен метод sendFileToUser");
 
@@ -180,12 +279,14 @@ public class ServiceCommand {
         bot.execute(message);
     }
 
+
     public void getTiming (Update update){
         logger.info("Запущен метод getTiming");
 
         long chatId = update.callbackQuery().message().chat().id();
         SendMessage message = new SendMessage(chatId,"c 12 до 22");
         bot.execute(message);
+
     }
 }
 

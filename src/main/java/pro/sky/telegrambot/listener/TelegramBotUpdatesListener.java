@@ -32,10 +32,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Autowired
     private TelegramBot bot;
+
     @Autowired
     private PersonRepository personRepository;
+
     @Autowired
-    PersonService personService;
+    private PersonService personService;
 
     @Autowired
     private ServiceCommand service;
@@ -70,6 +72,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 service.infoMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_INFO");
             });
+
             commandMap.put(CALL_BACK_FOR_VOLUNTEER, chatId -> {
                 service.volunteerCommand(update);
                 logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
@@ -83,6 +86,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             commandMap.put(CALL_BACK_FOR_GENERAL_INFO_FILE, chatId -> {
                 service.sendFileToUser(update);
                 logger.info("Command called - CALL_BACK_FOR_GENERAL_INFO_FILE");
+            });
+
+
+            commandMap.put(CALL_BACK_FOR_CONSULTATION, chatId -> {
+                service.consultationMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_CONSULTATION");
             });
 
             commandMap.put(CALL_BACK_FOR_ADDRESS, chatId -> {
@@ -107,7 +116,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
 
 
-
+            commandMap.put(CALL_BACK_FOR_RECOMMENDATIONS, chatId -> {
+                service.recommendationsMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_RECOMMENDATIONS");
+            });
 
             if (update.message() != null && update.message().text() != null && update.message().chat() != null) {
                 personService.createPerson(update);
@@ -128,7 +140,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (commandMap.containsKey(callbackData)) {
                     logger.info("Мы получили апдейт, колбэк есть в мапе");
                     commandMap.get(callbackData).accept(chatId);
-
                 }
             }
         });
