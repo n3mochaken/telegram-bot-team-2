@@ -26,6 +26,10 @@ public class Constants {
 
     public static final String CALL_BACK_FOR_START_MENU = "startMenu";
     public static final String CALL_BACK_FOR_GENERAL_INFO_FILE = "generalInfo.pdf";
+    public static final String CALL_BACK_FOR_ADDRESS="sendAddress";
+    public static final String CALL_BACK_FOR_SAFETY_RULES="safetyRules.pdf";
+    public static final String CALL_BACK_FOR_CONTACTS="getContacts";
+    public static final String CALL_BACK_FOR_TIMING="getTiming";
 
 
     public static final String CONSULTATION_TEXT = "Что вам проконсультировать?";

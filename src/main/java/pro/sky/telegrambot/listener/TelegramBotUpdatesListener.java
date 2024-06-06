@@ -67,14 +67,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 service.welcomeMenu(update);
                 logger.info("Command called - /start");
             });
-//            commandMap.put(INFO_COMMAND, chatId -> {
-//                service.infoPr(update);
-//                logger.info("Command called - /info");
-//            });
-//            commandMap.put(CALL_BACK_GET_FILE_GENERAL, chatId -> {
-//                service.sendFileToUser(update);
-//                logger.info("Command called - CALL_BACK_GET_FILE_GENERAL");
-//            });
+
             commandMap.put(CALL_BACK_FOR_INFO, chatId -> {
                 service.infoMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_INFO");
@@ -95,10 +88,33 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - CALL_BACK_FOR_GENERAL_INFO_FILE");
             });
 
+
             commandMap.put(CALL_BACK_FOR_CONSULTATION, chatId -> {
                 service.consultationMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_CONSULTATION");
             });
+
+            commandMap.put(CALL_BACK_FOR_ADDRESS, chatId -> {
+                service.sendAddressToUser(update);
+                logger.info("Command called - CALL_BACK_FOR_ADDRESS");
+            });
+
+            commandMap.put(CALL_BACK_FOR_CONTACTS, chatId -> {
+                service.getContacts(update);
+                logger.info("Command called - CALL_BACK_FOR_ADDRESS");
+            });
+
+            commandMap.put(CALL_BACK_FOR_SAFETY_RULES, chatId -> {
+                service.sendFileToUser(update);
+                logger.info("Command called - CALL_BACK_FOR_ADDRESS");
+            });
+
+            commandMap.put(CALL_BACK_FOR_TIMING, chatId -> {
+                service.getTiming(update);
+                logger.info("Command called - CALL_BACK_FOR_ADDRESS");
+            });
+
+
 
             commandMap.put(CALL_BACK_FOR_RECOMMENDATIONS, chatId -> {
                 service.recommendationsMenu(update);

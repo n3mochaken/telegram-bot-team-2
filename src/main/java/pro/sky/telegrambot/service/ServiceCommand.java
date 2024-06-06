@@ -26,6 +26,8 @@ public class ServiceCommand {
 
     @Value("${upload.path}")
     private String pathToDocument;
+    @Value("${shelter.address}")
+    private String link;
 
     private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
@@ -98,11 +100,13 @@ public class ServiceCommand {
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton infoBtn1 = new InlineKeyboardButton("Как проехать").callbackData(CALL_BACK_FOR_INFO);
-        InlineKeyboardButton infoBtn2 = new InlineKeyboardButton("Контактные данные для оформления пропуска").callbackData(CALL_BACK_FOR_GENERAL_INFO_FILE);
-        InlineKeyboardButton infoBtn3 = new InlineKeyboardButton("Техника безопасности на территории приюта").callbackData(CALL_BACK_FOR_INFO);
-        InlineKeyboardButton infoBtn4 = new InlineKeyboardButton("Расписание работы приюта").callbackData(CALL_BACK_FOR_INFO);
-        InlineKeyboardButton infoBtn5 = new InlineKeyboardButton("Получить консультацию").callbackData(CALL_BACK_FOR_CONSULTATION);
+
+        InlineKeyboardButton infoBtn1 = new InlineKeyboardButton("Как проехать").callbackData(CALL_BACK_FOR_ADDRESS);
+        InlineKeyboardButton infoBtn2 = new InlineKeyboardButton("Контактные данные для оформления пропуска").callbackData(CALL_BACK_FOR_CONTACTS);
+        InlineKeyboardButton infoBtn3 = new InlineKeyboardButton("Техника безопасности на территории приюта").callbackData(CALL_BACK_FOR_SAFETY_RULES);
+        InlineKeyboardButton infoBtn4 = new InlineKeyboardButton("Расписание работы приюта").callbackData(CALL_BACK_FOR_TIMING);
+        InlineKeyboardButton infoBtn5 = new InlineKeyboardButton("Получить консультацию").callbackData(CALL_BACK_FOR_INFO);
+
         InlineKeyboardButton infoBtn6 = new InlineKeyboardButton("Вызвать волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
         InlineKeyboardButton infoBtn7 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
@@ -133,6 +137,7 @@ public class ServiceCommand {
      * @param update данные от пользователя
      */
     public void volunteerCommand(Update update) {
+
         logger.info("Взван метод volunteer");
 
         Long chatId = update.callbackQuery().message().chat().id();
@@ -150,6 +155,7 @@ public class ServiceCommand {
         bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
+
     }
 
     public void consultationMenu(Update update) {
@@ -253,17 +259,34 @@ public class ServiceCommand {
         logger.info("отправил файл");
 
         DeleteMessage deleteMessage = new DeleteMessage(chatId,responseMessage.messageId());
+
         bot.execute(deleteMessage);
-
     }
 
-    public void getUserData(Update update) {
-        logger.info("Взван метод getUserData");
-        Long chatId = update.message().chat().id();
+    public void sendAddressToUser (Update update){
+        logger.info("Запущен метод sendAddressToUser");
+
+        long chatId = update.callbackQuery().message().chat().id();
+        SendMessage message = new SendMessage(chatId,"Адрес приюта по ссылкне на гугл мапс\n"+link);
+        bot.execute(message);
     }
 
-    private Long getChatId(Message message) {
-        return message.chat().id();
+    public void getContacts (Update update){
+        logger.info("Запущен метод sendAddressToUser");
+
+        long chatId = update.callbackQuery().message().chat().id();
+        SendMessage message = new SendMessage(chatId,"ГАЛЯ +9 999-999-99-99");
+        bot.execute(message);
+    }
+
+
+    public void getTiming (Update update){
+        logger.info("Запущен метод getTiming");
+
+        long chatId = update.callbackQuery().message().chat().id();
+        SendMessage message = new SendMessage(chatId,"c 12 до 22");
+        bot.execute(message);
+
     }
 }
 
