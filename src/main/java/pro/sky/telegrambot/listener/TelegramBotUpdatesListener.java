@@ -4,6 +4,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -129,6 +130,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (commandMap.containsKey(message)) {
                     commandMap.get(message).accept(chatId);
                 }
+                else{
+                    bot.execute(new SendMessage(update.message().chat().id(),"Не понял тебя месага"));
+                }
             }
             if (update.callbackQuery() != null) {
                 logger.info("Мы получили апдейт, колбэн не нулл");
@@ -139,6 +143,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (commandMap.containsKey(callbackData)) {
                     logger.info("Мы получили апдейт, колбэк есть в мапе");
                     commandMap.get(callbackData).accept(chatId);
+                }
+                else{
+                    bot.execute(new SendMessage(update.message().chat().id(),"Не понял тебя апдейт"));
                 }
             }
         });

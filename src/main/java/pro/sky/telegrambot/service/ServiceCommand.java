@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 
 import java.io.File;
+import java.util.Objects;
 
 import static pro.sky.telegrambot.constants.Constants.*;
 
@@ -129,6 +130,9 @@ public class ServiceCommand {
         bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
+
+
+
     }
 
     /**
@@ -171,7 +175,7 @@ public class ServiceCommand {
         InlineKeyboardButton consultationBtn2 = new InlineKeyboardButton("Правила знакомства с животным").callbackData(CALL_BACK_FOR_RULES_AND_SHELTER);
         InlineKeyboardButton consultationBtn3 = new InlineKeyboardButton("Список документов").callbackData(CALL_BACK_FOR_LIST_DOCUMENTS);
         InlineKeyboardButton consultationBtn4 = new InlineKeyboardButton("Причины отказа").callbackData(CALL_BACK_FOR_REASONS_FOR_REFUSAL);
-        InlineKeyboardButton consultationBtn5 = new InlineKeyboardButton("Посмотреть животных").callbackData(CALL_BACK_FOR_RECORD_CONTACTS);
+        InlineKeyboardButton consultationBtn5 = new InlineKeyboardButton("Оставить свои контакты для обратной связи").callbackData(CALL_BACK_FOR_RECORD_CONTACTS);
         InlineKeyboardButton consultationBtn6 = new InlineKeyboardButton("Рекомендации").callbackData(CALL_BACK_FOR_RECOMMENDATIONS);
 
         InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
@@ -195,6 +199,8 @@ public class ServiceCommand {
         bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
+
+
     }
 
     public void recommendationsMenu(Update update) {
@@ -235,6 +241,7 @@ public class ServiceCommand {
 
         logger.info("отправил месагу");
 
+
     }
 
     public void sendFileToUser(Update update){
@@ -253,6 +260,8 @@ public class ServiceCommand {
 
         logger.info("считал файл");
 
+
+
         SendDocument sendDocument = new SendDocument(chatId,file);
         sendDocument.caption("Вот информация, которую ты запросил!");
         bot.execute(sendDocument);
@@ -263,22 +272,40 @@ public class ServiceCommand {
         DeleteMessage deleteMessage = new DeleteMessage(chatId,responseMessage.messageId());
         bot.execute(deleteMessage);
 
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton infoBtn = new InlineKeyboardButton("Вернуться назад").callbackData(CALL_BACK_FOR_INFO);
-        keyboardMarkup.addRow(infoBtn);
 
-        SendMessage menuMessage = new SendMessage(chatId, "Выберите действие")
-                .replyMarkup(keyboardMarkup);
-        Message menuResponse = bot.execute(menuMessage).message();
+        backMenu(update);
+
 
     }
 
-    public void sendAddressToUser(Update update){
+    public void backMenu(Update update){
+        InlineKeyboardMarkup keyboardMarkup1 = new InlineKeyboardMarkup();
+        String data =update.callbackQuery().data();
+
+        if(Objects.equals(data, CALL_BACK_FOR_ADDRESS) || Objects.equals(data, CALL_BACK_FOR_CONTACTS) || Objects.equals(data, CALL_BACK_FOR_SAFETY_RULES) || Objects.equals(data, CALL_BACK_FOR_TIMING)){
+            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+            InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку информации").callbackData(CALL_BACK_FOR_INFO);
+            keyboardMarkup1.addRow(backMenuBtn1);
+            keyboardMarkup1.addRow(backMenuBtn2);
+            SendMessage message1 = new SendMessage(update.callbackQuery().message().chat().id(),"Куда тебя перенаправить?");
+            message1.replyMarkup(keyboardMarkup1);
+            bot.execute(message1);
+        }
+
+    }
+
+
+
+    public void sendAddressToUser (Update update){
+
         logger.info("Запущен метод sendAddressToUser");
 
         long chatId = update.callbackQuery().message().chat().id();
         SendMessage message = new SendMessage(chatId,"Адрес приюта по ссылкне на гугл мапс\n"+link);
         bot.execute(message);
+
+        backMenu(update);
+
     }
 
     public void getContacts (Update update){
@@ -287,6 +314,9 @@ public class ServiceCommand {
         long chatId = update.callbackQuery().message().chat().id();
         SendMessage message = new SendMessage(chatId,"ГАЛЯ +9 999-999-99-99");
         bot.execute(message);
+
+        backMenu(update);
+
     }
 
 
@@ -296,6 +326,9 @@ public class ServiceCommand {
         long chatId = update.callbackQuery().message().chat().id();
         SendMessage message = new SendMessage(chatId,"c 12 до 22");
         bot.execute(message);
+
+        backMenu(update);
+
 
     }
 }
