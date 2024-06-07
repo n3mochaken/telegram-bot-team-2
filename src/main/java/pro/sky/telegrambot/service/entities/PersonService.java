@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.Person;
 import pro.sky.telegrambot.repository.PersonRepository;
 
+import java.util.Optional;
+
 /**
  * Сервис для работы с пользователями
  */
@@ -41,7 +43,6 @@ public class PersonService {
         }
     }
 
-    //ДОРАБОТКА: {@link JpaRepository#findById(Object)} findByChatId - в репозитории не проканает видимо такой запрос
     /**
      * Возвращает пользователя по его индентификатору
      * Используется метод репозитория {@link JpaRepository#findById(Object)}
@@ -49,7 +50,7 @@ public class PersonService {
      * @param id индентификатор пользователя
      * @return возвращаемая сущность
      */
-    public Person findPerson(long id) {
+    public Optional<Person> findPerson(long id) {
         logger.debug("Running find student method");
         return personRepository.findByChatId(id);
     }

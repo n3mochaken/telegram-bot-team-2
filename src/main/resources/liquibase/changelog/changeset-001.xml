@@ -44,5 +44,18 @@
         </createTable>
     </changeSet>
 
+    <!-- ChangeSet для создания таблицы Shelter -->
+    <changeSet id="004-create-table-report" author="team_2">
+        <createTable tableName="report">
+            <column name="report_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="photo" type="VARCHAR(255)"/>
+            <column name="food" type="VARCHAR(255)"/>
+            <column name="health" type="VARCHAR(255)"/>
+            <column name="changes" type="VARCHAR(255)"/>
+            <column name="approval" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
