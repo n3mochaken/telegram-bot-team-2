@@ -115,7 +115,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             });
 
 
-
             commandMap.put(CALL_BACK_FOR_RECOMMENDATIONS, chatId -> {
                 service.recommendationsMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_RECOMMENDATIONS");
