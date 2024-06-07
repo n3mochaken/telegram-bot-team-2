@@ -242,6 +242,7 @@ public class ServiceCommand {
         logger.info("Запущен метод sendFileToUser");
 
         long chatId = update.callbackQuery().message().chat().id();
+        Integer messageId = update.callbackQuery().message().messageId();
 
         SendMessage message = new SendMessage(chatId,"Начинаю отправку файла");
         Message responseMessage = bot.execute(message).message();
@@ -256,14 +257,23 @@ public class ServiceCommand {
         sendDocument.caption("Вот информация, которую ты запросил!");
         bot.execute(sendDocument);
 
+
         logger.info("отправил файл");
 
         DeleteMessage deleteMessage = new DeleteMessage(chatId,responseMessage.messageId());
-
         bot.execute(deleteMessage);
+
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton infoBtn = new InlineKeyboardButton("Вернуться назад").callbackData(CALL_BACK_FOR_INFO);
+        keyboardMarkup.addRow(infoBtn);
+
+        SendMessage menuMessage = new SendMessage(chatId, "Выберите действие")
+                .replyMarkup(keyboardMarkup);
+        Message menuResponse = bot.execute(menuMessage).message();
+
     }
 
-    public void sendAddressToUser (Update update){
+    public void sendAddressToUser(Update update){
         logger.info("Запущен метод sendAddressToUser");
 
         long chatId = update.callbackQuery().message().chat().id();
