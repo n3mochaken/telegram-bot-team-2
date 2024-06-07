@@ -11,6 +11,7 @@ public class Person {
     private Long personId;
     private Long chatId;
     private String phoneNumber;
+    //private int countReports;
 
     @OneToOne
     @JoinColumn(name = "animal_id")
