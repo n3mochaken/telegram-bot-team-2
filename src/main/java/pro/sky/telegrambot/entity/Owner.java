@@ -2,6 +2,8 @@ package pro.sky.telegrambot.entity;
 
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -19,17 +21,17 @@ public class Owner {
     @JoinColumn(name = "animal_id")
     private Animal animal;
 
-    @OneToOne
+    @OneToMany
     @JoinColumn(name = "report_id")
-    private Report report;
+    private Collection<Report> reports;
 
     private int countApprovedReport;
 
-    public Owner(Long ownerId, Person person, Animal animal, Report report, int countApprovedReport) {
+    public Owner(Long ownerId, Person person, Animal animal, int countApprovedReport) {
         this.ownerId = ownerId;
         this.person = person;
         this.animal = animal;
-        this.report = report;
+
         this.countApprovedReport = countApprovedReport;
     }
 
@@ -60,13 +62,6 @@ public class Owner {
         this.animal = animal;
     }
 
-    public Report getReport() {
-        return report;
-    }
-
-    public void setReport(Report report) {
-        this.report = report;
-    }
 
     public int getCountApprovedReport() {
         return countApprovedReport;
@@ -81,12 +76,12 @@ public class Owner {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Owner owner = (Owner) o;
-        return countApprovedReport == owner.countApprovedReport && Objects.equals(ownerId, owner.ownerId) && Objects.equals(person, owner.person) && Objects.equals(animal, owner.animal) && Objects.equals(report, owner.report);
+        return countApprovedReport == owner.countApprovedReport && Objects.equals(ownerId, owner.ownerId) && Objects.equals(person, owner.person) && Objects.equals(animal, owner.animal);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ownerId, person, animal, report, countApprovedReport);
+        return Objects.hash(ownerId, person, animal,countApprovedReport);
     }
 
     @Override
@@ -95,8 +90,11 @@ public class Owner {
                 "ownerId=" + ownerId +
                 ", person=" + person +
                 ", animal=" + animal +
-                ", report=" + report +
                 ", countApprovedReport=" + countApprovedReport +
                 '}';
+    }
+
+    public Collection<Report> getReport(){
+        return reports;
     }
 }

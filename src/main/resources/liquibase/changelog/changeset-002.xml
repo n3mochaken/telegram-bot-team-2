@@ -5,6 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+    <!-- ChangeSet для создания внешних ключей -->
     <changeSet id="005-add-foreign-keys" author="n.surzhikov">
         <addForeignKeyConstraint baseTableName="animal"
                                  baseColumnNames="owner_id"
