@@ -8,11 +8,6 @@
     <!-- ChangeSet для добавления внешних ключей -->
     <changeSet id="004-add-foreign-keys" author="n.surzhikov">
         <addForeignKeyConstraint baseTableName="animal"
-                                 baseColumnNames="shelter_id"
-                                 constraintName="fk_animal_shelter"
-                                 referencedTableName="shelter"
-                                 referencedColumnNames="shelter_id"/>
-        <addForeignKeyConstraint baseTableName="animal"
                                  baseColumnNames="person_id"
                                  constraintName="fk_animal_person"
                                  referencedTableName="person"
@@ -22,5 +17,6 @@
                                  constraintName="fk_person_animal"
                                  referencedTableName="animal"
                                  referencedColumnNames="animal_id"/>
+
     </changeSet>
 </databaseChangeLog>

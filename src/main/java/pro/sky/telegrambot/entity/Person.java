@@ -11,16 +11,16 @@ public class Person {
     private Long personId;
     private Long chatId;
     private String phoneNumber;
-    //private int countReports;
 
     @OneToOne
-    @JoinColumn(name = "animal_id")
-    private Animal animal;
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 
-    public Person(Long personId, Long chatId, String phoneNumber) {
+    public Person(Long personId, Long chatId, String phoneNumber, Owner owner) {
         this.personId = personId;
         this.chatId = chatId;
         this.phoneNumber = phoneNumber;
+        this.owner = owner;
     }
 
     public Person() {
@@ -50,21 +50,34 @@ public class Person {
         this.phoneNumber = phoneNumber;
     }
 
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return Objects.equals(personId, person.personId) && Objects.equals(chatId, person.chatId) && Objects.equals(phoneNumber, person.phoneNumber);
+        return Objects.equals(personId, person.personId) && Objects.equals(chatId, person.chatId) && Objects.equals(phoneNumber, person.phoneNumber) && Objects.equals(owner, person.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(personId, chatId, phoneNumber);
+        return Objects.hash(personId, chatId, phoneNumber, owner);
     }
 
     @Override
     public String toString() {
-        return "Person:" + personId + ", chatId=" + chatId + ", phoneNumber='" + phoneNumber;
+        return "Person{" +
+                "personId=" + personId +
+                ", chatId=" + chatId +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", owner=" + owner +
+                '}';
     }
 }

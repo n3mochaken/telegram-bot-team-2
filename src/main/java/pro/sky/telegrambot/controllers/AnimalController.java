@@ -4,12 +4,11 @@ package pro.sky.telegrambot.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.service.AnimalService;
+
+import java.util.List;
 
 
 /**
@@ -32,4 +31,26 @@ public class AnimalController {
     public Animal create(@RequestBody Animal animal) {
         return animalService.create(animal);
     }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Изменение данных о животном в приюте")
+    public Animal update(@PathVariable long id, @RequestBody Animal animal) {
+        return animalService.update(id, animal);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Удаление животного из приюта")
+    public Animal delete(@PathVariable long id) {
+        return animalService.delete(id);
+    }
+
+
+/*
+    @GetMapping
+    @Operation(summary = "Показать всех животных приюта")
+    public List<Animal> findAll(@RequestParam Animal animal) {
+        return animalService.findAll(animal);
+    }
+*/
+
 }

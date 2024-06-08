@@ -6,16 +6,15 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <!-- ChangeSet для создания таблицы Shelter -->
-    <changeSet id="001-create-table-shelter" author="n.surzhikov">
-        <createTable tableName="shelter">
-            <column name="shelter_id" type="BIGINT" autoIncrement="true">
+    <changeSet id="001-create-table-shelter" author="team_2">
+        <createTable tableName="owner">
+            <column name="owner_id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="info" type="VARCHAR(255)"/>
-            <column name="name" type="VARCHAR(255)"/>
-            <column name="address" type="VARCHAR(255)"/>
-            <column name="contacts" type="VARCHAR(255)"/>
-            <column name="rules" type="VARCHAR(255)"/>
+            <column name="person" type="VARCHAR(255)"/>
+            <column name="animal" type="VARCHAR(255)"/>
+            <column name="report" type="VARCHAR(255)"/>
+            <column name="countApprovedReport" type="INT"/>
         </createTable>
     </changeSet>
 
@@ -27,8 +26,8 @@
             </column>
             <column name="animal_name" type="VARCHAR(255)"/>
             <column name="animal_age" type="INT"/>
-            <column name="shelter_id" type="BIGINT"/>
-            <column name="person_id" type="BIGINT"/>
+            <column name="photoPass" type="VARCHAR(255)"/>
+            <column name="owner" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
 
@@ -41,6 +40,7 @@
             <column name="chat_id" type="BIGINT"/>
             <column name="phone_number" type="VARCHAR(255)"/>
             <column name="animal_id" type="BIGINT"/>
+            <column name="owner" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
 
