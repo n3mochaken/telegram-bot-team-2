@@ -9,22 +9,22 @@ public class Animal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long animalId;
+
     private String animalName;
     private int animalAge;
-    //private String photoPass;
-    @ManyToOne
-    @JoinColumn(name = "shelter_id")
-    private Shelter shelter;
+    private String photoPass;
 
     @OneToOne
-    @JoinColumn(name = "person_id")
-    private Person person;
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 
 
-    public Animal(Long animalId, String animalName, int animalAge) {
+    public Animal(Long animalId, String animalName, int animalAge, String photoPass, Owner owner) {
         this.animalId = animalId;
         this.animalName = animalName;
         this.animalAge = animalAge;
+        this.photoPass = photoPass;
+        this.owner = owner;
     }
 
     public Animal() {
@@ -54,12 +54,20 @@ public class Animal {
         this.animalAge = animalAge;
     }
 
-    public Shelter getShelter(Shelter shelter) {
-        return shelter;
+    public String getPhotoPass() {
+        return photoPass;
     }
 
-    public Person getPerson(Person person) {
-        return person;
+    public void setPhotoPass(String photoPass) {
+        this.photoPass = photoPass;
+    }
+
+    public Owner getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
     @Override
@@ -67,11 +75,22 @@ public class Animal {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Animal animal = (Animal) o;
-        return animalAge == animal.animalAge && Objects.equals(animalId, animal.animalId) && Objects.equals(animalName, animal.animalName);
+        return animalAge == animal.animalAge && Objects.equals(animalId, animal.animalId) && Objects.equals(animalName, animal.animalName) && Objects.equals(photoPass, animal.photoPass) && Objects.equals(owner, animal.owner);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(animalId, animalName, animalAge);
+        return Objects.hash(animalId, animalName, animalAge, photoPass, owner);
+    }
+
+    @Override
+    public String toString() {
+        return "Animal{" +
+                "animalId=" + animalId +
+                ", animalName='" + animalName + '\'' +
+                ", animalAge=" + animalAge +
+                ", photoPass='" + photoPass + '\'' +
+                ", owner=" + owner +
+                '}';
     }
 }
