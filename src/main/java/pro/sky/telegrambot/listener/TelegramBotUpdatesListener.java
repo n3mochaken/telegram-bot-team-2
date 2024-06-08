@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.repository.PersonRepository;
+import pro.sky.telegrambot.service.PhotoService;
 import pro.sky.telegrambot.service.ServiceCommand;
 import pro.sky.telegrambot.service.entities.PersonService;
 
@@ -42,6 +43,9 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
     @Autowired
     private ServiceCommand service;
+
+    @Autowired
+    PhotoService photoService;
 
     private final Map<String, Consumer<Long>> commandMap = new HashMap<>();
 
@@ -121,17 +125,19 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - CALL_BACK_FOR_RECOMMENDATIONS");
             });
 
-            if (update.message() != null && update.message().text() != null && update.message().chat() != null) {
-                personService.createPerson(update);
-                logger.info("Мы получили апдейт, который не нулл");
-                String message = update.message().text();
-                long chatId = update.message().chat().id();
-                // Checking the command in HashMap
-                if (commandMap.containsKey(message)) {
-                    commandMap.get(message).accept(chatId);
-                }
-                else{
-                    bot.execute(new SendMessage(update.message().chat().id(),"Не понял тебя месага"));
+            if (update.message() != null) {
+                // Проверка на наличие фотографии
+                if (update.message().photo() != null) {
+                    photoService.processPhoto(update);
+                } else if (update.message().text() != null) {
+                    personService.createPerson(update);
+                    String message = update.message().text();
+                    long chatId = update.message().chat().id();
+                    if (commandMap.containsKey(message)) {
+                        commandMap.get(message).accept(chatId);
+                    } else {
+                        bot.execute(new SendMessage(chatId, "Не понял тебя месага"));
+                    }
                 }
             }
             if (update.callbackQuery() != null) {
