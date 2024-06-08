@@ -11,10 +11,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.entity.Person;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
+import pro.sky.telegrambot.repository.PersonRepository;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static pro.sky.telegrambot.constants.Constants.*;
 
@@ -34,6 +40,9 @@ public class ServiceCommand {
 
     @Autowired
     private TelegramBot bot;
+
+    @Autowired
+    private PersonRepository repository;
 
     // Сommands for the bot
 
@@ -130,9 +139,6 @@ public class ServiceCommand {
         bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
-
-
-
     }
 
     /**
@@ -260,8 +266,6 @@ public class ServiceCommand {
 
         logger.info("считал файл");
 
-
-
         SendDocument sendDocument = new SendDocument(chatId,file);
         sendDocument.caption("Вот информация, которую ты запросил!");
         bot.execute(sendDocument);
@@ -272,17 +276,17 @@ public class ServiceCommand {
         DeleteMessage deleteMessage = new DeleteMessage(chatId,responseMessage.messageId());
         bot.execute(deleteMessage);
 
-
         backMenu(update);
-
-
     }
 
     public void backMenu(Update update){
         InlineKeyboardMarkup keyboardMarkup1 = new InlineKeyboardMarkup();
-        String data =update.callbackQuery().data();
+        String data = update.callbackQuery().data();
 
-        if(Objects.equals(data, CALL_BACK_FOR_ADDRESS) || Objects.equals(data, CALL_BACK_FOR_CONTACTS) || Objects.equals(data, CALL_BACK_FOR_SAFETY_RULES) || Objects.equals(data, CALL_BACK_FOR_TIMING)){
+        if(Objects.equals(data, CALL_BACK_FOR_ADDRESS) ||
+                Objects.equals(data, CALL_BACK_FOR_CONTACTS) ||
+                Objects.equals(data, CALL_BACK_FOR_SAFETY_RULES) ||
+                Objects.equals(data, CALL_BACK_FOR_TIMING)) {
             InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
             InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку информации").callbackData(CALL_BACK_FOR_INFO);
             keyboardMarkup1.addRow(backMenuBtn1);
@@ -291,9 +295,24 @@ public class ServiceCommand {
             message1.replyMarkup(keyboardMarkup1);
             bot.execute(message1);
         }
-
     }
 
+    public void savePhoneNumber(long chatId, String message) {
+        Pattern pattern = Pattern.compile("\\+7[0-9]{10}");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            String text = matcher.group(3); // ???
+
+            Person person = new Person();
+            person.setChatId(chatId);
+            person.setPhoneNumber(text);
+            repository.save(person);
+
+            logger.info("Успешно добавленно!");
+        } else {
+            logger.info("Не найдено совпадений по шаблону в сообщении: {}", message);
+        }
+    }
 
 
     public void sendAddressToUser (Update update){
