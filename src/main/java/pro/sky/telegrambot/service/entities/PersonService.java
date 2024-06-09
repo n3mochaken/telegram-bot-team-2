@@ -33,7 +33,7 @@ public class PersonService {
      * @param update данные от пользователя
      */
     public void createPerson(Update update) {
-        if (findPerson(update.message().chat().id()) == null) {
+        if (findPerson(update.message().chat().id()).isEmpty()) {
             Person person = new Person();
             person.setChatId(update.message().chat().id());
             personRepository.save(person);
