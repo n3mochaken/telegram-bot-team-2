@@ -39,6 +39,7 @@ public class Constants {
     public static final String CALL_BACK_FOR_LIST_DOCUMENTS = "listDocuments";
     public static final String CALL_BACK_FOR_REASONS_FOR_REFUSAL = "reasonsForRefusal";
     public static final String CALL_BACK_FOR_RECORD_CONTACTS = "recordСontacts";
+    public static final String RECORD_CONTACTS = "Напишите ваши контакты!";
 
     public static final String RECOMMENDATIONS = "Рекомендации по:";
     public static final String CALL_BACK_FOR_RECOMMENDATIONS = "recommendations";

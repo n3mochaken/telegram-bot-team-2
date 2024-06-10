@@ -154,8 +154,8 @@ public class ServiceCommand {
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
-        keyboardMarkup.addRow(infoVolunteer);
+        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        keyboardMarkup.addRow(mainMenu);
 
         logger.info("сделал клаву");
 
@@ -295,20 +295,47 @@ public class ServiceCommand {
         }
     }
 
-    public void savePhoneNumber(long chatId, String message) {
-        Pattern pattern = Pattern.compile("\\+7[0-9]{10}");
-        Matcher matcher = pattern.matcher(message);
-        if (matcher.find()) {
-            String text = matcher.group(3); // ???
+    public void savePhoneNumber(Update update) {
+        // НАД ЭТИМ НАДО ПОДУМАТЬ!
+        long chatId = update.callbackQuery().message().chat().id();
+        Integer messageId = update.callbackQuery().message().messageId();
 
+        Pattern pattern = Pattern.compile("\\+7[0-9]{10}");
+        Matcher matcher = pattern.matcher(update.callbackQuery().message().text());
+        if (matcher.find()) {
+            String textNumber = matcher.group();
+
+            textNumber = textNumber.replace("+", "")
+                    .replace("-", "")
+                    .replace(" ", "");
+            if (textNumber.length() == 10) {
+                textNumber = '7' + textNumber;
+            } else if (textNumber.length() > 11) {
+                throw new RuntimeException("Номер телефона слишком длинный");
+            } else if (textNumber.isEmpty()) {
+                throw new RuntimeException("Введите номер телефефона!");
+            } else if (textNumber.length() < 10) {
+                throw new RuntimeException("Номер телефона слишком короткий");
+            } else if (textNumber.charAt(0) != '7'
+                    && textNumber.charAt(0) != '8') {
+                throw new RuntimeException("Номер телефона не RUS");
+            }
             Person person = new Person();
             person.setChatId(chatId);
-            person.setPhoneNumber(text);
+            person.setPhoneNumber(textNumber);
             repository.save(person);
+
+            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+            InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в главное меню")
+                    .callbackData(CALL_BACK_FOR_MAIN_MENU);
+            keyboardMarkup.addRow(mainMenu);
+
+            bot.execute(new EditMessageText(chatId,messageId, RECORD_CONTACTS));
+            bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
 
             logger.info("Успешно добавленно!");
         } else {
-            logger.info("Не найдено совпадений по шаблону в сообщении: {}", message);
+            logger.info("Не найдено совпадений по шаблону в сообщении: {}", messageId);
         }
     }
 
