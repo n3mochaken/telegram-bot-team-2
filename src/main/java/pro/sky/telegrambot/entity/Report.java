@@ -1,6 +1,9 @@
 package pro.sky.telegrambot.entity;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -9,18 +12,23 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long report_Id;
-    private String photo;
+
+    @Lob
+    @Type(type="org.hibernate.type.BinaryType")
+    @Column(name = "photo")
+    private byte[] photo;
     private String food;
     private String health;
     private String changes;
     private boolean approval;
+
     @ManyToOne
     @JoinColumn(name="Owner_id")
     private Owner owner;
 
+    // Конструкторы, геттеры, сеттеры, equals, hashCode, toString
 
-
-    public Report(Long report_Id, String photo, String food, String health, String changes, boolean approval) {
+    public Report(Long report_Id, byte[] photo, String food, String health, String changes, boolean approval) {
         this.report_Id = report_Id;
         this.photo = photo;
         this.food = food;
@@ -40,11 +48,11 @@ public class Report {
         this.report_Id = report_Id;
     }
 
-    public String getPhoto() {
+    public byte[] getPhoto() {
         return photo;
     }
 
-    public void setPhoto(String photo) {
+    public void setPhoto(byte[] photo) {
         this.photo = photo;
     }
 
@@ -85,19 +93,26 @@ public class Report {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Report report = (Report) o;
-        return approval == report.approval && Objects.equals(report_Id, report.report_Id) && Objects.equals(photo, report.photo) && Objects.equals(food, report.food) && Objects.equals(health, report.health) && Objects.equals(changes, report.changes);
+        return approval == report.approval &&
+                Objects.equals(report_Id, report.report_Id) &&
+                Arrays.equals(photo, report.photo) &&
+                Objects.equals(food, report.food) &&
+                Objects.equals(health, report.health) &&
+                Objects.equals(changes, report.changes);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(report_Id, photo, food, health, changes, approval);
+        int result = Objects.hash(report_Id, food, health, changes, approval);
+        result = 31 * result + Arrays.hashCode(photo);
+        return result;
     }
 
     @Override
     public String toString() {
         return "Report{" +
                 "report_Id=" + report_Id +
-                ", photo='" + photo + '\'' +
+                ", photo=" + Arrays.toString(photo) +
                 ", food='" + food + '\'' +
                 ", health='" + health + '\'' +
                 ", changes='" + changes + '\'' +
