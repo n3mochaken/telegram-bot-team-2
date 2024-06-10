@@ -3,12 +3,9 @@ package pro.sky.telegrambot.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegrambot.entity.Animal;
-import pro.sky.telegrambot.service.AnimalService;
-
-import java.util.List;
+import pro.sky.telegrambot.service.entities.AnimalService;
 
 
 /**

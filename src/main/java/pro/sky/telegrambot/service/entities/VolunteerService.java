@@ -1,4 +1,4 @@
-package pro.sky.telegrambot.service;
+package pro.sky.telegrambot.service.entities;
 
 import org.springframework.stereotype.Service;
 

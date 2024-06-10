@@ -1,4 +1,4 @@
-package pro.sky.telegrambot.service;
+package pro.sky.telegrambot.service.entities;
 
 
 import org.slf4j.Logger;
@@ -8,9 +8,6 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.exception.AnimalNotFoundException;
 import pro.sky.telegrambot.repository.AnimalRepository;
-import pro.sky.telegrambot.repository.PersonRepository;
-
-import java.util.List;
 
 /**
  * Сервис для работы с животными
