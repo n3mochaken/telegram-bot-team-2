@@ -14,17 +14,15 @@ public class Animal {
     private int animalAge;
     private String photoPass;
 
-    @OneToOne
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
 
 
-    public Animal(Long animalId, String animalName, int animalAge, String photoPass, Owner owner) {
+
+    public Animal(Long animalId, String animalName, int animalAge, String photoPass) {
         this.animalId = animalId;
         this.animalName = animalName;
         this.animalAge = animalAge;
         this.photoPass = photoPass;
-        this.owner = owner;
+
     }
 
     public Animal() {
@@ -62,25 +60,19 @@ public class Animal {
         this.photoPass = photoPass;
     }
 
-    public Owner getOwner() {
-        return owner;
-    }
 
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Animal animal = (Animal) o;
-        return animalAge == animal.animalAge && Objects.equals(animalId, animal.animalId) && Objects.equals(animalName, animal.animalName) && Objects.equals(photoPass, animal.photoPass) && Objects.equals(owner, animal.owner);
+        return animalAge == animal.animalAge && Objects.equals(animalId, animal.animalId) && Objects.equals(animalName, animal.animalName) && Objects.equals(photoPass, animal.photoPass);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(animalId, animalName, animalAge, photoPass, owner);
+        return Objects.hash(animalId, animalName, animalAge, photoPass);
     }
 
     @Override
@@ -90,7 +82,6 @@ public class Animal {
                 ", animalName='" + animalName + '\'' +
                 ", animalAge=" + animalAge +
                 ", photoPass='" + photoPass + '\'' +
-                ", owner=" + owner +
                 '}';
     }
 }

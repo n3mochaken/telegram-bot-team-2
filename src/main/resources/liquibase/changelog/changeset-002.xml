@@ -7,23 +7,6 @@
 
     <!-- ChangeSet для создания внешних ключей -->
     <changeSet id="005-add-foreign-keys" author="n.surzhikov">
-        <addForeignKeyConstraint baseTableName="animal"
-                                 baseColumnNames="owner_id"
-                                 constraintName="fk_animal_owner"
-                                 referencedTableName="owner"
-                                 referencedColumnNames="owner_id"/>
-
-        <addForeignKeyConstraint baseTableName="person"
-                                 baseColumnNames="owner_id"
-                                 constraintName="fk_person_owner"
-                                 referencedTableName="owner"
-                                 referencedColumnNames="owner_id"/>
-
-        <addForeignKeyConstraint baseTableName="owner"
-                                 baseColumnNames="chat_id"
-                                 constraintName="fk_owner_person"
-                                 referencedTableName="person"
-                                 referencedColumnNames="person_id"/>
 
         <addForeignKeyConstraint baseTableName="owner"
                                  baseColumnNames="animal_id"
