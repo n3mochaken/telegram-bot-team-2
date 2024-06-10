@@ -7,6 +7,6 @@
 
     <include file="liquibase/changelog/changeset-001.xml"/>
     <include file="liquibase/changelog/changeset-002.xml"/>
-    <include file="liquibase/changelog/changeset-003.xml"/>
+
 
 </databaseChangeLog>

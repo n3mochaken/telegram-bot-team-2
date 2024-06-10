@@ -31,11 +31,11 @@
                                  referencedTableName="animal"
                                  referencedColumnNames="animal_id"/>
 
-        <addForeignKeyConstraint baseTableName="owner"
-                                 baseColumnNames="report_id"
-                                 constraintName="fk_owner_report"
-                                 referencedTableName="report"
-                                 referencedColumnNames="report_id"/>
+        <addForeignKeyConstraint baseTableName="report"
+                                 baseColumnNames="owner_id"
+                                 constraintName="fk_report_owner"
+                                 referencedTableName="owner"
+                                 referencedColumnNames="owner_id" />
     </changeSet>
 </databaseChangeLog>
 
