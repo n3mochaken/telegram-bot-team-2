@@ -26,10 +26,10 @@ public class Constants {
 
     public static final String CALL_BACK_FOR_START_MENU = "startMenu";
     public static final String CALL_BACK_FOR_GENERAL_INFO_FILE = "generalInfo.pdf";
-    public static final String CALL_BACK_FOR_ADDRESS="sendAddress";
-    public static final String CALL_BACK_FOR_SAFETY_RULES="safetyRules.pdf";
-    public static final String CALL_BACK_FOR_CONTACTS="getContacts";
-    public static final String CALL_BACK_FOR_TIMING="getTiming";
+    public static final String CALL_BACK_FOR_ADDRESS = "sendAddress";
+    public static final String CALL_BACK_FOR_SAFETY_RULES = "safetyRules.pdf";
+    public static final String CALL_BACK_FOR_CONTACTS = "getContacts";
+    public static final String CALL_BACK_FOR_TIMING = "getTiming";
 
 
     public static final String CONSULTATION_TEXT = "Что вам проконсультировать?";
@@ -42,6 +42,8 @@ public class Constants {
     public static final String RECORD_CONTACTS = "Напишите ваши контакты!";
 
     public static final String RECOMMENDATIONS = "Рекомендации по:";
+
+    //вынести все текстовки в проперти
     public static final String CALL_BACK_FOR_RECOMMENDATIONS = "recommendations";
     public static final String CALL_BACK_FOR_TRANSPORTATION_RECOMMENDATIONS = "transportation";
     public static final String CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_PUPPY = "homeImprovementPuppy";

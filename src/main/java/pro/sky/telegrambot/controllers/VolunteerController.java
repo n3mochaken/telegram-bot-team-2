@@ -17,7 +17,7 @@ import java.util.Collection;
 @Tag(name = "Волонтер", description = "Эндпойнты для работы волонтера с отчетами итп")
 public class VolunteerController {
 
-private final VolunteerService volunteerService;
+    private final VolunteerService volunteerService;
 
     public VolunteerController(VolunteerService volunteerService) {
         this.volunteerService = volunteerService;
@@ -25,7 +25,7 @@ private final VolunteerService volunteerService;
 
 
     @GetMapping("/allreports")
-    public ResponseEntity<Collection<Report>> getAllReports(){
-       return ResponseEntity.ok(volunteerService.getAllReports());
+    public ResponseEntity<Collection<Report>> getAllReports() {
+        return ResponseEntity.ok(volunteerService.getAllReports());
     }
 }

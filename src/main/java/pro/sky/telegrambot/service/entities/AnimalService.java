@@ -31,7 +31,7 @@ public class AnimalService {
      * @return сохраняет сущность
      */
     public Animal create(Animal animal) {
-        animal.setAnimalId(null);
+        animal.setId(null);
         logger.info("Животное создано");
         return animalRepository.save(animal);
     }
@@ -48,8 +48,8 @@ public class AnimalService {
     public Animal update(long id, Animal animal) {
         return animalRepository.findById(id)
                 .map(oldAnimal -> {
-                    oldAnimal.setAnimalName(animal.getAnimalName());
-                    oldAnimal.setAnimalAge(animal.getAnimalAge());
+                    oldAnimal.setName(animal.getName());
+                    oldAnimal.setName(animal.getName());
                     return animalRepository.save(oldAnimal);
                 })
                 .orElseThrow(() -> new AnimalNotFoundException(id));

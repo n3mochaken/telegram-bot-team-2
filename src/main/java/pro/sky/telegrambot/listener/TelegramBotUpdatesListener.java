@@ -7,12 +7,11 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.repository.PersonRepository;
 import pro.sky.telegrambot.service.PhotoService;
 import pro.sky.telegrambot.service.ServiceCommand;
-import pro.sky.telegrambot.service.entities.PersonService;
+import pro.sky.telegrambot.service.entities.OwnerService;
+
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -29,23 +28,18 @@ import static pro.sky.telegrambot.constants.Constants.*;
  */
 @Service
 public class TelegramBotUpdatesListener implements UpdatesListener {
-
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
-
-    @Autowired
     private TelegramBot bot;
-
-    @Autowired
-    private PersonRepository personRepository;
-
-    @Autowired
-    private PersonService personService;
-
-    @Autowired
     private ServiceCommand service;
+    private PhotoService photoService;
+    private OwnerService ownerService;
 
-    @Autowired
-    PhotoService photoService;
+    public TelegramBotUpdatesListener(TelegramBot bot, ServiceCommand service, PhotoService photoService, OwnerService ownerService) {
+        this.bot = bot;
+        this.service = service;
+        this.photoService = photoService;
+        this.ownerService = ownerService;
+    }
 
     private final Map<String, Consumer<Long>> commandMap = new HashMap<>();
 
@@ -134,7 +128,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (update.message().photo() != null) {
                     photoService.processPhoto(update);
                 } else if (update.message().text() != null) {
-                    personService.createPerson(update);
+                    ownerService.createPerson(update);
                     String message = update.message().text();
                     long chatId = update.message().chat().id();
                     if (commandMap.containsKey(message)) {
@@ -153,9 +147,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (commandMap.containsKey(callbackData)) {
                     logger.info("Мы получили апдейт, колбэк есть в мапе");
                     commandMap.get(callbackData).accept(chatId);
-                }
-                else{
-                    bot.execute(new SendMessage(update.message().chat().id(),"Не понял тебя апдейт"));
+                } else {
+                    bot.execute(new SendMessage(update.message().chat().id(), "Не понял тебя апдейт"));
                 }
             }
         });

@@ -11,10 +11,10 @@ public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long report_Id;
+    private Long id;
 
     @Lob
-    @Type(type="org.hibernate.type.BinaryType")
+    @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "photo")
     private byte[] photo;
     private String food;
@@ -23,29 +23,31 @@ public class Report {
     private boolean approval;
 
     @ManyToOne
-    @JoinColumn(name="Owner_id")
+    @JoinColumn(name = "owner_id")
     private Owner owner;
 
     // Конструкторы, геттеры, сеттеры, equals, hashCode, toString
 
-    public Report(Long report_Id, byte[] photo, String food, String health, String changes, boolean approval) {
-        this.report_Id = report_Id;
+
+    public Report(Long id, byte[] photo, String food, String health, String changes, boolean approval, Owner owner) {
+        this.id = id;
         this.photo = photo;
         this.food = food;
         this.health = health;
         this.changes = changes;
         this.approval = approval;
+        this.owner = owner;
     }
 
     public Report() {
     }
 
-    public Long getReportId() {
-        return report_Id;
+    public Long getId() {
+        return id;
     }
 
-    public void setReportId(Long report_Id) {
-        this.report_Id = report_Id;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public byte[] getPhoto() {
@@ -88,39 +90,11 @@ public class Report {
         this.approval = approval;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Report report = (Report) o;
-        return approval == report.approval &&
-                Objects.equals(report_Id, report.report_Id) &&
-                Arrays.equals(photo, report.photo) &&
-                Objects.equals(food, report.food) &&
-                Objects.equals(health, report.health) &&
-                Objects.equals(changes, report.changes);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hash(report_Id, food, health, changes, approval);
-        result = 31 * result + Arrays.hashCode(photo);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Report{" +
-                "report_Id=" + report_Id +
-                ", photo=" + Arrays.toString(photo) +
-                ", food='" + food + '\'' +
-                ", health='" + health + '\'' +
-                ", changes='" + changes + '\'' +
-                ", approval=" + approval +
-                '}';
-    }
-
-    public Owner getOwner(){
+    public Owner getOwner() {
         return owner;
+    }
+
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 }
