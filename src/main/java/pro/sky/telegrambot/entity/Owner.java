@@ -11,47 +11,54 @@ public class Owner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long ownerId;
-
-    @OneToOne
-    @JoinColumn(name = "chat_id")
-    private Person person;
-
+    private Long id;
+    private Long chatId;
     @OneToOne
     @JoinColumn(name = "animal_id")
     private Animal animal;
+    private String phoneNumber;
+    private boolean isOwner;
+    private String fullName;
 
-    @OneToMany
-    @JoinColumn(name = "report_id")
-    private Collection<Report> reports;
-
-    private int countApprovedReport;
-
-    public Owner(Long ownerId, Person person, Animal animal, int countApprovedReport) {
-        this.ownerId = ownerId;
-        this.person = person;
+    public Owner(Long id, Long chatId, Animal animal, String phoneNumber, boolean isOwner, String fullName) {
+        this.id = id;
+        this.chatId = chatId;
         this.animal = animal;
-
-        this.countApprovedReport = countApprovedReport;
+        this.phoneNumber = phoneNumber;
+        this.isOwner = isOwner;
+        this.fullName = fullName;
     }
 
     public Owner() {
     }
 
-    public Long getOwnerId() {
-        return ownerId;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Owner owner = (Owner) o;
+        return isOwner == owner.isOwner && Objects.equals(id, owner.id) && Objects.equals(chatId, owner.chatId) && Objects.equals(animal, owner.animal) && Objects.equals(phoneNumber, owner.phoneNumber) && Objects.equals(fullName, owner.fullName);
     }
 
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, chatId, animal, phoneNumber, isOwner, fullName);
     }
 
-    public Person getPerson() {
-        return person;
+    public Long getId() {
+        return id;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
     }
 
     public Animal getAnimal() {
@@ -62,39 +69,27 @@ public class Owner {
         this.animal = animal;
     }
 
-
-    public int getCountApprovedReport() {
-        return countApprovedReport;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setCountApprovedReport(int countApprovedReport) {
-        this.countApprovedReport = countApprovedReport;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Owner owner = (Owner) o;
-        return countApprovedReport == owner.countApprovedReport && Objects.equals(ownerId, owner.ownerId) && Objects.equals(person, owner.person) && Objects.equals(animal, owner.animal);
+    public boolean isOwner() {
+        return isOwner;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(ownerId, person, animal,countApprovedReport);
+    public void setOwner(boolean owner) {
+        isOwner = owner;
     }
 
-    @Override
-    public String toString() {
-        return "Owner{" +
-                "ownerId=" + ownerId +
-                ", person=" + person +
-                ", animal=" + animal +
-                ", countApprovedReport=" + countApprovedReport +
-                '}';
+    public String getFullName() {
+        return fullName;
     }
 
-    public Collection<Report> getReport(){
-        return reports;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 }

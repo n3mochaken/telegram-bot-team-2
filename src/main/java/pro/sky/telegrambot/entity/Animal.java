@@ -8,50 +8,44 @@ public class Animal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long animalId;
+    private Long id;
 
-    private String animalName;
-    private int animalAge;
+    private String name;
+    private int age;
     private String photoPass;
 
-    @OneToOne
-    @JoinColumn(name = "owner_id")
-    private Owner owner;
-
-
-    public Animal(Long animalId, String animalName, int animalAge, String photoPass, Owner owner) {
-        this.animalId = animalId;
-        this.animalName = animalName;
-        this.animalAge = animalAge;
+    public Animal(Long id, String name, int age, String photoPass) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
         this.photoPass = photoPass;
-        this.owner = owner;
     }
 
     public Animal() {
     }
 
-    public Long getAnimalId() {
-        return animalId;
+    public Long getId() {
+        return id;
     }
 
-    public void setAnimalId(Long animalId) {
-        this.animalId = animalId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getAnimalName() {
-        return animalName;
+    public String getName() {
+        return name;
     }
 
-    public void setAnimalName(String animalName) {
-        this.animalName = animalName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getAnimalAge() {
-        return animalAge;
+    public int getAge() {
+        return age;
     }
 
-    public void setAnimalAge(int animalAge) {
-        this.animalAge = animalAge;
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getPhotoPass() {
@@ -62,35 +56,16 @@ public class Animal {
         this.photoPass = photoPass;
     }
 
-    public Owner getOwner() {
-        return owner;
-    }
-
-    public void setOwner(Owner owner) {
-        this.owner = owner;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Animal animal = (Animal) o;
-        return animalAge == animal.animalAge && Objects.equals(animalId, animal.animalId) && Objects.equals(animalName, animal.animalName) && Objects.equals(photoPass, animal.photoPass) && Objects.equals(owner, animal.owner);
+        return age == animal.age && Objects.equals(id, animal.id) && Objects.equals(name, animal.name) && Objects.equals(photoPass, animal.photoPass);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(animalId, animalName, animalAge, photoPass, owner);
-    }
-
-    @Override
-    public String toString() {
-        return "Animal{" +
-                "animalId=" + animalId +
-                ", animalName='" + animalName + '\'' +
-                ", animalAge=" + animalAge +
-                ", photoPass='" + photoPass + '\'' +
-                ", owner=" + owner +
-                '}';
+        return Objects.hash(id, name, age, photoPass);
     }
 }

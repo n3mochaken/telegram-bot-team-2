@@ -41,6 +41,7 @@ public class TelegramBotConfiguration {
                 updatesResponse = bot.execute(getUpdates);
             }
         } catch (Exception e) {
+            //дописать логер
             e.printStackTrace();
         }
 
@@ -48,9 +49,6 @@ public class TelegramBotConfiguration {
 
 
     }
-
-
-
 
 
 }

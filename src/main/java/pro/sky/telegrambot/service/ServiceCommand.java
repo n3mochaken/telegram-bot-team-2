@@ -11,9 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.entity.Person;
+
+import pro.sky.telegrambot.entity.Owner;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
-import pro.sky.telegrambot.repository.PersonRepository;
+import pro.sky.telegrambot.repository.OwnerRepository;
 
 import java.io.File;
 import java.util.Objects;
@@ -24,10 +25,11 @@ import static pro.sky.telegrambot.constants.Constants.*;
 
 /**
  * Сервис реализующий команды Телеграм бота
- *
  */
 @Service
 public class ServiceCommand {
+    private TelegramBot bot;
+    private OwnerRepository ownerRepository;
 
     @Value("${upload.path}")
     private String pathToDocument;
@@ -36,11 +38,12 @@ public class ServiceCommand {
 
     private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    @Autowired
-    private TelegramBot bot;
 
-    @Autowired
-    private PersonRepository repository;
+    public ServiceCommand(TelegramBot bot, OwnerRepository ownerRepository) {
+        this.bot = bot;
+        this.ownerRepository = ownerRepository;
+    }
+
 
     // Сommands for the bot
 
@@ -63,7 +66,7 @@ public class ServiceCommand {
         keyboardMarkup.addRow(menuBtn);
 
         SendMessage message = new SendMessage(update.message().chat().id(), START_TEXT);
-        DeleteMessage deleteMessage = new DeleteMessage(chatId,messageId);
+        DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
         message.replyMarkup(keyboardMarkup);
 
         logger.info("сделал клаву");
@@ -74,7 +77,7 @@ public class ServiceCommand {
         logger.info("отправил месагу");
     }
 
-    public void mainMenu(Update update){
+    public void mainMenu(Update update) {
 
         logger.info("Взван метод mainMenu");
 
@@ -91,8 +94,8 @@ public class ServiceCommand {
 
         logger.info("сделал клаву");
 
-        bot.execute(new EditMessageText(chatId,messageId,MAIN_MENU_TEXT));
-        bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+        bot.execute(new EditMessageText(chatId, messageId, MAIN_MENU_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
     }
@@ -133,8 +136,8 @@ public class ServiceCommand {
 
         logger.info("сделал клаву");
 
-        bot.execute(new EditMessageText(chatId,messageId,INFO_TEXT));
-        bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+        bot.execute(new EditMessageText(chatId, messageId, INFO_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
     }
@@ -159,8 +162,8 @@ public class ServiceCommand {
 
         logger.info("сделал клаву");
 
-        bot.execute(new EditMessageText(chatId,messageId,VOLUNTEER_TEXT));
-        bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+        bot.execute(new EditMessageText(chatId, messageId, VOLUNTEER_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
 
@@ -199,8 +202,8 @@ public class ServiceCommand {
 
         logger.info("сделал клаву");
 
-        bot.execute(new EditMessageText(chatId,messageId,CONSULTATION_TEXT));
-        bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+        bot.execute(new EditMessageText(chatId, messageId, CONSULTATION_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
 
@@ -240,22 +243,22 @@ public class ServiceCommand {
 
         logger.info("сделал клаву");
 
-        bot.execute(new EditMessageText(chatId,messageId,RECOMMENDATIONS));
-        bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+        bot.execute(new EditMessageText(chatId, messageId, RECOMMENDATIONS));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
 
 
     }
 
-    public void sendFileToUser(Update update){
+    public void sendFileToUser(Update update) {
 
         logger.info("Запущен метод sendFileToUser");
 
         long chatId = update.callbackQuery().message().chat().id();
         Integer messageId = update.callbackQuery().message().messageId();
 
-        SendMessage message = new SendMessage(chatId,"Начинаю отправку файла");
+        SendMessage message = new SendMessage(chatId, "Начинаю отправку файла");
         Message responseMessage = bot.execute(message).message();
 
         logger.info("Зашел в метод отправки");
@@ -264,24 +267,24 @@ public class ServiceCommand {
 
         logger.info("считал файл");
 
-        SendDocument sendDocument = new SendDocument(chatId,file);
+        SendDocument sendDocument = new SendDocument(chatId, file);
         sendDocument.caption("Вот информация, которую ты запросил!");
         bot.execute(sendDocument);
 
 
         logger.info("отправил файл");
 
-        DeleteMessage deleteMessage = new DeleteMessage(chatId,responseMessage.messageId());
+        DeleteMessage deleteMessage = new DeleteMessage(chatId, responseMessage.messageId());
         bot.execute(deleteMessage);
 
         backMenu(update);
     }
 
-    public void backMenu(Update update){
+    public void backMenu(Update update) {
         InlineKeyboardMarkup keyboardMarkup1 = new InlineKeyboardMarkup();
         String data = update.callbackQuery().data();
 
-        if(Objects.equals(data, CALL_BACK_FOR_ADDRESS) ||
+        if (Objects.equals(data, CALL_BACK_FOR_ADDRESS) ||
                 Objects.equals(data, CALL_BACK_FOR_CONTACTS) ||
                 Objects.equals(data, CALL_BACK_FOR_SAFETY_RULES) ||
                 Objects.equals(data, CALL_BACK_FOR_TIMING)) {
@@ -289,7 +292,7 @@ public class ServiceCommand {
             InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку информации").callbackData(CALL_BACK_FOR_INFO);
             keyboardMarkup1.addRow(backMenuBtn1);
             keyboardMarkup1.addRow(backMenuBtn2);
-            SendMessage message1 = new SendMessage(update.callbackQuery().message().chat().id(),"Куда тебя перенаправить?");
+            SendMessage message1 = new SendMessage(update.callbackQuery().message().chat().id(), "Куда тебя перенаправить?");
             message1.replyMarkup(keyboardMarkup1);
             bot.execute(message1);
         }
@@ -320,18 +323,18 @@ public class ServiceCommand {
                     && textNumber.charAt(0) != '8') {
                 throw new RuntimeException("Номер телефона не RUS");
             }
-            Person person = new Person();
-            person.setChatId(chatId);
-            person.setPhoneNumber(textNumber);
-            repository.save(person);
+            Owner owner = new Owner();
+            owner.setChatId(chatId);
+            owner.setPhoneNumber(textNumber);
+            ownerRepository.save(owner);
 
             InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
             InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в главное меню")
                     .callbackData(CALL_BACK_FOR_MAIN_MENU);
             keyboardMarkup.addRow(mainMenu);
 
-            bot.execute(new EditMessageText(chatId,messageId, RECORD_CONTACTS));
-            bot.execute(new EditMessageReplyMarkup(chatId,messageId).replyMarkup(keyboardMarkup));
+            bot.execute(new EditMessageText(chatId, messageId, RECORD_CONTACTS));
+            bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
 
             logger.info("Успешно добавленно!");
         } else {
@@ -340,12 +343,12 @@ public class ServiceCommand {
     }
 
 
-    public void sendAddressToUser (Update update){
+    public void sendAddressToUser(Update update) {
 
         logger.info("Запущен метод sendAddressToUser");
 
         long chatId = update.callbackQuery().message().chat().id();
-        SendMessage message = new SendMessage(chatId,"Адрес приюта по ссылкне на гугл мапс\n"+link);
+        SendMessage message = new SendMessage(chatId, "Адрес приюта по ссылкне на гугл мапс\n" + link);
         bot.execute(message);
 
         backMenu(update);
@@ -353,11 +356,11 @@ public class ServiceCommand {
 
     }
 
-    public void getContacts (Update update){
+    public void getContacts(Update update) {
         logger.info("Запущен метод sendAddressToUser");
 
         long chatId = update.callbackQuery().message().chat().id();
-        SendMessage message = new SendMessage(chatId,"ГАЛЯ +9 999-999-99-99");
+        SendMessage message = new SendMessage(chatId, "ГАЛЯ +9 999-999-99-99");
         bot.execute(message);
 
         backMenu(update);
@@ -365,11 +368,11 @@ public class ServiceCommand {
     }
 
 
-    public void getTiming (Update update){
+    public void getTiming(Update update) {
         logger.info("Запущен метод getTiming");
 
         long chatId = update.callbackQuery().message().chat().id();
-        SendMessage message = new SendMessage(chatId,"c 12 до 22");
+        SendMessage message = new SendMessage(chatId, "c 12 до 22");
         bot.execute(message);
 
         backMenu(update);
