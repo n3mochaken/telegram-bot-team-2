@@ -11,8 +11,16 @@ import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.repository.AnimalRepository;
 import pro.sky.telegrambot.service.entities.AnimalService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
 import java.util.List;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 
 
 /**
@@ -24,9 +32,11 @@ import java.util.List;
 public class AnimalController {
 
     private final AnimalService animalService;
+    private final AnimalRepository animalRepository;
 
-    public AnimalController(AnimalService animalService) {
+    public AnimalController(AnimalService animalService, AnimalRepository animalRepository) {
         this.animalService = animalService;
+        this.animalRepository = animalRepository;
     }
 
     @PostMapping
@@ -47,11 +57,37 @@ public class AnimalController {
         return animalService.delete(id);
     }
 
+
     @GetMapping("/{id}")
     @Operation(summary = "Получение животного")
     public Animal get(@PathVariable long id) {
         return animalService.get(id);
     }
+
+
+    @PostMapping(value = "/{id}/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar)throws IOException{
+        if (avatar.getSize()>=2048*2048){
+            return ResponseEntity.badRequest().body("Слишком большая картинка");
+        }
+        animalService.uploadAvatar(id,avatar);
+        return ResponseEntity.ok().build();
+    }
+
+//    @GetMapping(value = "/{id}/avatar")
+//    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response)throws IOException{
+//        Animal animal = animalRepository.getById(id);
+//        Path path = Path.of(animal.getPhotoPass());
+//
+//        try(InputStream is = Files.newInputStream(path);
+//            OutputStream os = response.getOutputStream();){
+//            response.setContentType(MediaType.MULTIPART_FORM_DATA_VALUE);
+//            response.setContentLength((int)animal.ge);
+//        }
+//    }
+
+
+
 
     @GetMapping
     @Operation(summary = "Показать всех животных приюта")
