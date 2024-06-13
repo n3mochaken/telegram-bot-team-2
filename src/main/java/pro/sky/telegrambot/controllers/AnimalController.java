@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
+import pro.sky.telegrambot.entity.AnimalAvatar;
 import pro.sky.telegrambot.repository.AnimalRepository;
+import pro.sky.telegrambot.service.entities.AnimalAvatarService;
 import pro.sky.telegrambot.service.entities.AnimalService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 
-
 /**
  * Контроллер для работы с животными
  */
@@ -32,11 +33,13 @@ import java.nio.file.Path;
 public class AnimalController {
 
     private final AnimalService animalService;
-    private final AnimalRepository animalRepository;
 
-    public AnimalController(AnimalService animalService, AnimalRepository animalRepository) {
+    private final AnimalAvatarService animalAvatarService;
+
+    public AnimalController(AnimalService animalService, AnimalAvatarService animalAvatarService) {
         this.animalService = animalService;
-        this.animalRepository = animalRepository;
+
+        this.animalAvatarService = animalAvatarService;
     }
 
     @PostMapping
@@ -64,31 +67,6 @@ public class AnimalController {
         return animalService.get(id);
     }
 
-
-    @PostMapping(value = "/{id}/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar)throws IOException{
-        if (avatar.getSize()>=2048*2048){
-            return ResponseEntity.badRequest().body("Слишком большая картинка");
-        }
-        animalService.uploadAvatar(id,avatar);
-        return ResponseEntity.ok().build();
-    }
-
-//    @GetMapping(value = "/{id}/avatar")
-//    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response)throws IOException{
-//        Animal animal = animalRepository.getById(id);
-//        Path path = Path.of(animal.getPhotoPass());
-//
-//        try(InputStream is = Files.newInputStream(path);
-//            OutputStream os = response.getOutputStream();){
-//            response.setContentType(MediaType.MULTIPART_FORM_DATA_VALUE);
-//            response.setContentLength((int)animal.ge);
-//        }
-//    }
-
-
-
-
     @GetMapping
     @Operation(summary = "Показать всех животных приюта")
     public ResponseEntity<List<Animal>> findAll() {
@@ -97,13 +75,33 @@ public class AnimalController {
     }
 
     @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Добавление фото для животного")
+    @Operation(summary = "установка аватарки пета по ид")
     public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
-        if (avatar.getSize() >= 2048 * 2048) {
-            return ResponseEntity.badRequest().body("Слишком большая картинка");
+        if (avatar.getSize() >= 2048 * 4048) {
+            return ResponseEntity.badRequest().body("Файл слишком большой");
         }
-        animalService.uploadAvatar(id, avatar);
+        animalAvatarService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
-
     }
+
+    @GetMapping(value = "/{id}/avatar")
+    @Operation(summary = "выгрузка аватараш шкуры")
+    public void downloadAvatar(@PathVariable Long id,HttpServletResponse response) throws IOException{
+        AnimalAvatar animalAvatar = animalAvatarService.findAnimalAvatar(id);
+
+        Path path = Path.of(animalAvatar.getFilePath());
+
+        try(InputStream is = Files.newInputStream(path);
+        OutputStream os = response.getOutputStream();   ){
+            response.setStatus(200);
+            response.setContentType(animalAvatar.getMediaType());
+            response.setContentLength((int)animalAvatar.getFileSize());
+            is.transferTo(os);
+        }
+    }
+
+
+
+
+
 }

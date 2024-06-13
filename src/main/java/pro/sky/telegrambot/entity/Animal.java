@@ -13,8 +13,6 @@ public class Animal {
     private String name;
     private int age;
     private String photoPass;
-    @OneToOne
-    AnimalAvatar animalAvatar;
 
     public Animal(Long id, String name, int age, String photoPass) {
         this.id = id;
@@ -24,6 +22,7 @@ public class Animal {
     }
 
     public Animal() {
+
     }
 
     public Long getId() {

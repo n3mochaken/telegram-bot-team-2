@@ -5,7 +5,7 @@ import javax.persistence.*;
 @Entity
 public class AnimalAvatar {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String filePath;
     private long fileSize;
