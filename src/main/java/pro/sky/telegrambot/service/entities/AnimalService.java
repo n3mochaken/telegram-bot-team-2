@@ -1,25 +1,44 @@
 package pro.sky.telegrambot.service.entities;
 
 
+import com.pengrad.telegrambot.TelegramBot;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
+
 import pro.sky.telegrambot.exception.AnimalNotFoundException;
 import pro.sky.telegrambot.repository.AnimalRepository;
+
+import javax.transaction.Transactional;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
+
 
 /**
  * Сервис для работы с животными
  */
+@Transactional
 @Service
 public class AnimalService {
+    @Value("${animal.avatars.path}")
+    private String avatarPath;
 
+    private TelegramBot bot;
     private final AnimalRepository animalRepository;
 
-    Logger logger = LoggerFactory.getLogger(AnimalService.class);
+    private final Logger logger = LoggerFactory.getLogger(AnimalService.class);
 
-    public AnimalService(AnimalRepository animalRepository) {
+    public AnimalService(TelegramBot bot, AnimalRepository animalRepository) {
+        this.bot = bot;
         this.animalRepository = animalRepository;
     }
 
@@ -31,11 +50,11 @@ public class AnimalService {
      * @return сохраняет сущность
      */
     public Animal create(Animal animal) {
-        animal.setAnimalId(null);
+        animal.setId(null);
         logger.info("Животное создано");
         return animalRepository.save(animal);
-    }
 
+    }
 
     /**
      * Обновляет сущность по передоваемым параметрам
@@ -48,13 +67,12 @@ public class AnimalService {
     public Animal update(long id, Animal animal) {
         return animalRepository.findById(id)
                 .map(oldAnimal -> {
-                    oldAnimal.setAnimalName(animal.getAnimalName());
-                    oldAnimal.setAnimalAge(animal.getAnimalAge());
+                    oldAnimal.setName(animal.getName());
+                    oldAnimal.setName(animal.getName());
                     return animalRepository.save(oldAnimal);
                 })
                 .orElseThrow(() -> new AnimalNotFoundException(id));
     }
-
 
     /**
      * Удаляет сущность из приюта по идентификатору
@@ -64,6 +82,7 @@ public class AnimalService {
      * @param id индентификатор удаляемой сущности
      * @return удаленная сущность
      */
+
     public Animal delete(long id) {
         return animalRepository.findById(id)
                 .map(animal -> {
@@ -71,6 +90,45 @@ public class AnimalService {
                     return animal;
                 })
                 .orElseThrow(() -> new AnimalNotFoundException(id));
+    }
+
+    /**
+     * Метод на входе принимает ид животного и файл, считывает файл,
+     * сохраняет его на диск и записывает путь к нему в рупозиторий{@link AnimalRepository}     *
+     * @param id животного из репозитория
+     * @param avatar фотка,которую хотим прикрепить
+     * @throws IOException дефолт
+     */
+
+    public void uploadAvatar(Long id, MultipartFile avatar) throws IOException {
+
+        Animal animal = animalRepository.getById(id);
+
+        Path filePath = Path.of(avatarPath, id + "." + getExtension(avatar.getOriginalFilename()));
+        Files.deleteIfExists(filePath);
+        try (InputStream is = avatar.getInputStream();
+             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+             BufferedInputStream bis = new BufferedInputStream(is, 1024);
+             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+
+        ) {
+            bis.transferTo(bos);
+        }
+
+        animal.setPhotoPass(filePath.toString());
+        animalRepository.save(animal);
+
+
+    }
+
+    /**
+     * Вспомогательный метод для определения разрешения загруженного фото
+     * @param fileName полученный от юзера файл
+     * @return разрешение файла
+     */
+
+    private String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
 /*    public List<Animal> findAll(Animal animal) {
