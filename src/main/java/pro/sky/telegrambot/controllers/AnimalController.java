@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
+import pro.sky.telegrambot.repository.AnimalRepository;
 import pro.sky.telegrambot.service.entities.AnimalService;
 
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -26,7 +28,6 @@ public class AnimalController {
     public AnimalController(AnimalService animalService) {
         this.animalService = animalService;
     }
-
 
     @PostMapping
     @Operation(summary = "Добавление животного в приют")
@@ -46,23 +47,27 @@ public class AnimalController {
         return animalService.delete(id);
     }
 
-    @PostMapping(value = "/{id}/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar)throws IOException{
-        if (avatar.getSize()>=2048*2048){
+    @GetMapping("/{id}")
+    @Operation(summary = "Получение животного")
+    public Animal get(@PathVariable long id) {
+        return animalService.get(id);
+    }
+
+    @GetMapping
+    @Operation(summary = "Показать всех животных приюта")
+    public ResponseEntity<List<Animal>> findAll() {
+        List<Animal> animals = animalService.findAll();
+        return ResponseEntity.ok(animals);
+    }
+
+    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Добавление фото для животного")
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
+        if (avatar.getSize() >= 2048 * 2048) {
             return ResponseEntity.badRequest().body("Слишком большая картинка");
         }
-        animalService.uploadAvatar(id,avatar);
+        animalService.uploadAvatar(id, avatar);
         return ResponseEntity.ok().build();
 
     }
-
-
-/*
-    @GetMapping
-    @Operation(summary = "Показать всех животных приюта")
-    public List<Animal> findAll(@RequestParam Animal animal) {
-        return animalService.findAll(animal);
-    }
-*/
-
 }
