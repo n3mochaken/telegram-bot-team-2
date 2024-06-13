@@ -1,6 +1,5 @@
 package pro.sky.telegrambot.service.entities;
 
-
 import com.pengrad.telegrambot.TelegramBot;
 
 import org.slf4j.Logger;

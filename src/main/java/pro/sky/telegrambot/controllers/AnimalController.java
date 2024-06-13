@@ -8,9 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
+import pro.sky.telegrambot.repository.AnimalRepository;
 import pro.sky.telegrambot.service.entities.AnimalService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 
 /**
@@ -22,11 +28,12 @@ import java.io.IOException;
 public class AnimalController {
 
     private final AnimalService animalService;
+    private final AnimalRepository animalRepository;
 
-    public AnimalController(AnimalService animalService) {
+    public AnimalController(AnimalService animalService, AnimalRepository animalRepository) {
         this.animalService = animalService;
+        this.animalRepository = animalRepository;
     }
-
 
     @PostMapping
     @Operation(summary = "Добавление животного в приют")
@@ -53,8 +60,19 @@ public class AnimalController {
         }
         animalService.uploadAvatar(id,avatar);
         return ResponseEntity.ok().build();
-
     }
+
+//    @GetMapping(value = "/{id}/avatar")
+//    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response)throws IOException{
+//        Animal animal = animalRepository.getById(id);
+//        Path path = Path.of(animal.getPhotoPass());
+//
+//        try(InputStream is = Files.newInputStream(path);
+//            OutputStream os = response.getOutputStream();){
+//            response.setContentType(MediaType.MULTIPART_FORM_DATA_VALUE);
+//            response.setContentLength((int)animal.ge);
+//        }
+//    }
 
 
 /*
