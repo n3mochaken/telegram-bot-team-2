@@ -1,25 +1,44 @@
 package pro.sky.telegrambot.service.entities;
 
 
+import com.pengrad.telegrambot.TelegramBot;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
+
 import pro.sky.telegrambot.exception.AnimalNotFoundException;
 import pro.sky.telegrambot.repository.AnimalRepository;
+
+import javax.transaction.Transactional;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
+
 
 /**
  * Сервис для работы с животными
  */
+@Transactional
 @Service
 public class AnimalService {
+    @Value("${animal.avatars.path}")
+    private String avatarPath;
 
+    private TelegramBot bot;
     private final AnimalRepository animalRepository;
 
-    Logger logger = LoggerFactory.getLogger(AnimalService.class);
+    private final Logger logger = LoggerFactory.getLogger(AnimalService.class);
 
-    public AnimalService(AnimalRepository animalRepository) {
+    public AnimalService(TelegramBot bot, AnimalRepository animalRepository) {
+        this.bot = bot;
         this.animalRepository = animalRepository;
     }
 
@@ -34,8 +53,8 @@ public class AnimalService {
         animal.setId(null);
         logger.info("Животное создано");
         return animalRepository.save(animal);
-    }
 
+    }
 
     /**
      * Обновляет сущность по передоваемым параметрам
@@ -55,7 +74,6 @@ public class AnimalService {
                 .orElseThrow(() -> new AnimalNotFoundException(id));
     }
 
-
     /**
      * Удаляет сущность из приюта по идентификатору
      * Используются методы репозитория {@link AnimalRepository#findById(Object)}
@@ -64,6 +82,7 @@ public class AnimalService {
      * @param id индентификатор удаляемой сущности
      * @return удаленная сущность
      */
+
     public Animal delete(long id) {
         return animalRepository.findById(id)
                 .map(animal -> {
@@ -71,6 +90,31 @@ public class AnimalService {
                     return animal;
                 })
                 .orElseThrow(() -> new AnimalNotFoundException(id));
+    }
+
+    public void uploadAvatar(Long id, MultipartFile avatar) throws IOException {
+
+        Animal animal = animalRepository.getById(id);
+
+        Path filePath = Path.of(avatarPath, id + "." + getExtension(avatar.getOriginalFilename()));
+        Files.deleteIfExists(filePath);
+        try (InputStream is = avatar.getInputStream();
+             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+             BufferedInputStream bis = new BufferedInputStream(is, 1024);
+             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+
+        ) {
+            bis.transferTo(bos);
+        }
+
+        animal.setPhotoPass(filePath.toString());
+        animalRepository.save(animal);
+
+
+    }
+
+    private String getExtension(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
 /*    public List<Animal> findAll(Animal animal) {
