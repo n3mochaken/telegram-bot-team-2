@@ -51,7 +51,7 @@ public class AnimalService {
      * @return сохраняет сущность
      */
     public Animal create(Animal animal) {
-        animal.setId(null);
+        //animal.setId(null);
         logger.info("Животное создано");
         return animalRepository.save(animal);
     }
@@ -127,25 +127,25 @@ public class AnimalService {
      * @param avatar фотка,которую хотим прикрепить
      * @throws IOException дефолт
      */
-    public void uploadAvatar(Long id, MultipartFile avatar) throws IOException {
-
-        //добавить логи методу
-        Animal animal = animalRepository.getById(id);
-
-        Path filePath = Path.of(avatarPath, id + "." + getExtension(avatar.getOriginalFilename()));
-        Files.deleteIfExists(filePath);
-        try (InputStream is = avatar.getInputStream();
-             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-             BufferedInputStream bis = new BufferedInputStream(is, 1024);
-             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-
-        ) {
-            bis.transferTo(bos);
-        }
-
-        animal.setPhotoPass(filePath.toString());
-        animalRepository.save(animal);
-    }
+//    public void uploadAvatar(Long id, MultipartFile avatar) throws IOException {
+//
+//        //добавить логи методу
+//        Animal animal = animalRepository.getById(id);
+//
+//        Path filePath = Path.of(avatarPath, id + "." + getExtension(avatar.getOriginalFilename()));
+//        Files.deleteIfExists(filePath);
+//        try (InputStream is = avatar.getInputStream();
+//             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
+//             BufferedInputStream bis = new BufferedInputStream(is, 1024);
+//             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
+//
+//        ) {
+//            bis.transferTo(bos);
+//        }
+//
+//        animal.setPhotoPass(filePath.toString());
+//        animalRepository.save(animal);
+//    }
 
     /**
      * Вспомогательный метод для определения разрешения загруженного фото
@@ -153,9 +153,9 @@ public class AnimalService {
      * @param fileName полученный от юзера файл
      * @return разрешение файла
      */
-    private String getExtension(String fileName) {
-        return fileName.substring(fileName.lastIndexOf(".") + 1);
-    }
+//    private String getExtension(String fileName) {
+//        return fileName.substring(fileName.lastIndexOf(".") + 1);
+//    }
 
 
     //метод нахождения всех усыновленных животных

@@ -28,4 +28,14 @@ create table report
     changes  varchar(128),
     approval bool,
     owner_id integer references owner (id)
-)
+);
+
+create table animal_avatar
+(
+    id         SERIAL primary key,
+    file_path  varchar(128),
+    file_size  bigint,
+    media_type varchar(32),
+    preview    bigint,
+    animal_id  bigint references animal(id)
+);
