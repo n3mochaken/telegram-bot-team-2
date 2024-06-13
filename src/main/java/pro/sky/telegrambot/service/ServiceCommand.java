@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Contact;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
@@ -303,45 +304,44 @@ public class ServiceCommand {
         long chatId = update.callbackQuery().message().chat().id();
         Integer messageId = update.callbackQuery().message().messageId();
 
-        Pattern pattern = Pattern.compile("\\+7[0-9]{10}");
-        Matcher matcher = pattern.matcher(update.callbackQuery().message().text());
-        if (matcher.find()) {
-            String textNumber = matcher.group();
 
-            textNumber = textNumber.replace("+", "")
-                    .replace("-", "")
-                    .replace(" ", "");
-            if (textNumber.length() == 10) {
-                textNumber = '7' + textNumber;
-            } else if (textNumber.length() > 11) {
-                throw new RuntimeException("Номер телефона слишком длинный");
-            } else if (textNumber.isEmpty()) {
-                throw new RuntimeException("Введите номер телефефона!");
-            } else if (textNumber.length() < 10) {
-                throw new RuntimeException("Номер телефона слишком короткий");
-            } else if (textNumber.charAt(0) != '7'
-                    && textNumber.charAt(0) != '8') {
-                throw new RuntimeException("Номер телефона не RUS");
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+
+        keyboardMarkup.addRow(returnMainMenu);
+
+        if (update.message() != null && update.message().contact() != null) {
+            Contact contact = update.callbackQuery().message().contact();
+            String textNumber = contact.phoneNumber();
+
+            if (!textNumber.isEmpty()) {
+                textNumber = textNumber.replace("+", "")
+                        .replace("-", "")
+                        .replace(" ", "");
+
+                if (textNumber.length() < 10) {
+                    throw new RuntimeException("Номер телефона слишком короткий");
+                } else if (textNumber.length() > 11) {
+                    throw new RuntimeException("Номер телефона слишком длинный");
+                } else if (textNumber.charAt(0) != '7' && textNumber.charAt(0) != '8') {
+                    throw new RuntimeException("Номер телефона не начинается с '7' или '8'");
+                }
+
+                Owner owner = new Owner();
+                owner.setChatId(chatId);
+                owner.setPhoneNumber(textNumber);
+                ownerRepository.save(owner);
+
+                logger.info("Успешно добавлено!");
             }
-            Owner owner = new Owner();
-            owner.setChatId(chatId);
-            owner.setPhoneNumber(textNumber);
-            ownerRepository.save(owner);
-
-            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-            InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в главное меню")
-                    .callbackData(CALL_BACK_FOR_MAIN_MENU);
-            keyboardMarkup.addRow(mainMenu);
-
-            bot.execute(new EditMessageText(chatId, messageId, RECORD_CONTACTS));
-            bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
-
-            logger.info("Успешно добавленно!");
         } else {
-            logger.info("Не найдено совпадений по шаблону в сообщении: {}", messageId);
+            logger.info("Не добавлено!" + messageId);
         }
-    }
 
+        bot.execute(new EditMessageText(chatId, messageId, RECORD_CONTACTS));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
+
+    }
 
     public void sendAddressToUser(Update update) {
 
@@ -352,8 +352,6 @@ public class ServiceCommand {
         bot.execute(message);
 
         backMenu(update);
-
-
     }
 
     public void getContacts(Update update) {
