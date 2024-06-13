@@ -92,6 +92,14 @@ public class AnimalService {
                 .orElseThrow(() -> new AnimalNotFoundException(id));
     }
 
+    /**
+     * Метод на входе принимает ид животного и файл, считывает файл,
+     * сохраняет его на диск и записывает путь к нему в рупозиторий{@link AnimalRepository}     *
+     * @param id животного из репозитория
+     * @param avatar фотка,которую хотим прикрепить
+     * @throws IOException дефолт
+     */
+
     public void uploadAvatar(Long id, MultipartFile avatar) throws IOException {
 
         Animal animal = animalRepository.getById(id);
@@ -112,6 +120,12 @@ public class AnimalService {
 
 
     }
+
+    /**
+     * Вспомогательный метод для определения разрешения загруженного фото
+     * @param fileName полученный от юзера файл
+     * @return разрешение файла
+     */
 
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
