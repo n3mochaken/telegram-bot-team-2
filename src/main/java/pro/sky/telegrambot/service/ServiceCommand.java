@@ -305,8 +305,13 @@ public class ServiceCommand {
         Integer messageId = update.callbackQuery().message().messageId();
 
 
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+
+        keyboardMarkup.addRow(returnMainMenu);
+
         if (update.message() != null && update.message().contact() != null) {
-            Contact contact = update.message().contact();
+            Contact contact = update.callbackQuery().message().contact();
             String textNumber = contact.phoneNumber();
 
             if (!textNumber.isEmpty()) {
@@ -322,25 +327,20 @@ public class ServiceCommand {
                     throw new RuntimeException("Номер телефона не начинается с '7' или '8'");
                 }
 
-                Person person = new Person();
-                person.setChatId(chatId);
-                person.setPhoneNumber(textNumber);
-                repository.save(person);
+                Owner owner = new Owner();
+                owner.setChatId(chatId);
+                owner.setPhoneNumber(textNumber);
+                ownerRepository.save(owner);
 
                 logger.info("Успешно добавлено!");
-
-                InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-                InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
-
-                keyboardMarkup.addRow(returnMainMenu);
-
-                bot.execute(new EditMessageText(chatId, messageId, RECORD_CONTACTS));
-                bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
-
-            } else {
-                logger.info("Не найдено совпадений по шаблону в сообщении: {}", messageId);
             }
+        } else {
+            logger.info("Не добавлено!" + messageId);
         }
+
+        bot.execute(new EditMessageText(chatId, messageId, RECORD_CONTACTS));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
+
     }
 
     public void sendAddressToUser(Update update) {
