@@ -13,10 +13,14 @@ import pro.sky.telegrambot.service.entities.AnimalService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+import java.util.List;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
 
 
 /**
@@ -53,6 +57,14 @@ public class AnimalController {
         return animalService.delete(id);
     }
 
+
+    @GetMapping("/{id}")
+    @Operation(summary = "Получение животного")
+    public Animal get(@PathVariable long id) {
+        return animalService.get(id);
+    }
+
+
     @PostMapping(value = "/{id}/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar)throws IOException{
         if (avatar.getSize()>=2048*2048){
@@ -75,12 +87,23 @@ public class AnimalController {
 //    }
 
 
-/*
+
+
     @GetMapping
     @Operation(summary = "Показать всех животных приюта")
-    public List<Animal> findAll(@RequestParam Animal animal) {
-        return animalService.findAll(animal);
+    public ResponseEntity<List<Animal>> findAll() {
+        List<Animal> animals = animalService.findAll();
+        return ResponseEntity.ok(animals);
     }
-*/
 
+    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Добавление фото для животного")
+    public ResponseEntity<String> uploadAvatar(@PathVariable Long id, @RequestParam MultipartFile avatar) throws IOException {
+        if (avatar.getSize() >= 2048 * 2048) {
+            return ResponseEntity.badRequest().body("Слишком большая картинка");
+        }
+        animalService.uploadAvatar(id, avatar);
+        return ResponseEntity.ok().build();
+
+    }
 }

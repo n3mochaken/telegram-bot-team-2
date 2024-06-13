@@ -128,7 +128,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (update.message().photo() != null) {
                     photoService.processPhoto(update);
                 } else if (update.message().text() != null) {
-                    ownerService.createPerson(update);
+                    ownerService.createOwner(update);
                     String message = update.message().text();
                     long chatId = update.message().chat().id();
                     if (commandMap.containsKey(message)) {

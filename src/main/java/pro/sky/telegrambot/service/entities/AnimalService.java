@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
-
 import pro.sky.telegrambot.exception.AnimalNotFoundException;
 import pro.sky.telegrambot.repository.AnimalRepository;
 
@@ -17,6 +16,8 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
+import java.util.List;
 
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -28,6 +29,7 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Transactional
 @Service
 public class AnimalService {
+
     @Value("${animal.avatars.path}")
     private String avatarPath;
 
@@ -52,7 +54,6 @@ public class AnimalService {
         animal.setId(null);
         logger.info("Животное создано");
         return animalRepository.save(animal);
-
     }
 
     /**
@@ -68,8 +69,10 @@ public class AnimalService {
                 .map(oldAnimal -> {
                     oldAnimal.setName(animal.getName());
                     oldAnimal.setName(animal.getName());
+                    logger.info("Изменены данный о животном");
                     return animalRepository.save(oldAnimal);
                 })
+                //добавить логер logger.info("Животное не найдено");
                 .orElseThrow(() -> new AnimalNotFoundException(id));
     }
 
@@ -81,26 +84,52 @@ public class AnimalService {
      * @param id индентификатор удаляемой сущности
      * @return удаленная сущность
      */
-
     public Animal delete(long id) {
         return animalRepository.findById(id)
                 .map(animal -> {
                     animalRepository.delete(animal);
+                    logger.info("Животное удалено");
                     return animal;
                 })
+                //добавить логер logger.info("Животное не найдено");
                 .orElseThrow(() -> new AnimalNotFoundException(id));
     }
 
     /**
+     * Возвращает сущность по её идентификатору.
+     * Используется метод репозитория {@link JpaRepository#findById(Object)}
+     *
+     * @param id идентификатор сущности
+     * @return возвращаемая сущность
+     */
+    public Animal get(long id) {
+        //добавить логер logger.info("Животное найдено");
+        return animalRepository.findById(id)
+                //добавить логер logger.info("Животное не найдено");
+                .orElseThrow(() -> new AnimalNotFoundException(id));
+    }
+
+    /**
+     * Возвращает список всех созданных сущностей
+     *
+     * @return список сущностей
+     */
+    public List<Animal> findAll() {
+        logger.info("Вызван метод нахождения списка животных");
+        return animalRepository.findAll();
+    }
+
+    /**
      * Метод на входе принимает ид животного и файл, считывает файл,
-     * сохраняет его на диск и записывает путь к нему в рупозиторий{@link AnimalRepository}     *
-     * @param id животного из репозитория
+     * сохраняет его на диск и записывает путь к нему в рупозиторий{@link AnimalRepository}
+     *
+     * @param id     животного из репозитория
      * @param avatar фотка,которую хотим прикрепить
      * @throws IOException дефолт
      */
-
     public void uploadAvatar(Long id, MultipartFile avatar) throws IOException {
 
+        //добавить логи методу
         Animal animal = animalRepository.getById(id);
 
         Path filePath = Path.of(avatarPath, id + "." + getExtension(avatar.getOriginalFilename()));
@@ -116,25 +145,19 @@ public class AnimalService {
 
         animal.setPhotoPass(filePath.toString());
         animalRepository.save(animal);
-
-
     }
 
     /**
      * Вспомогательный метод для определения разрешения загруженного фото
+     *
      * @param fileName полученный от юзера файл
      * @return разрешение файла
      */
-
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-/*    public List<Animal> findAll(Animal animal) {
 
-    }*/
-
-    //метод нахождение всех животных прияюта
     //метод нахождения всех усыновленных животных
     // метод нахождения животных на испытательном сроке
 
