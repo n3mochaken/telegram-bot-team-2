@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.Report;
-import pro.sky.telegrambot.repository.ReportRepository;
+//import pro.sky.telegrambot.repository.ReportRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -24,8 +24,8 @@ public class PhotoService {
     @Autowired
     private TelegramBot bot;
 
-    @Autowired
-    private ReportRepository reportRepository;
+//    @Autowired
+//    private ReportRepository reportRepository;
 
     public void processPhoto(Update update) {
         logger.info("Вызван метод processPhoto");
@@ -57,7 +57,7 @@ public class PhotoService {
                 report.setPhoto(photoBytes);
 
                 logger.info("Пытаюсь кинуть в репу");
-                reportRepository.save(report);
+//                reportRepository.save(report);
 
                 bot.execute(new SendMessage(update.message().chat().id(), "Фото успешно загружено и сохранено."));
             } catch (Exception e) {
