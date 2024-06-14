@@ -4,12 +4,10 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Contact;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +16,9 @@ import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.OwnerRepository;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -300,47 +301,36 @@ public class ServiceCommand {
     }
 
     public void savePhoneNumber(Update update) {
-        // НАД ЭТИМ НАДО ПОДУМАТЬ!
+
+        logger.info("Запущен метод savePhoneNumber");
+
         long chatId = update.callbackQuery().message().chat().id();
-        Integer messageId = update.callbackQuery().message().messageId();
-
-
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
-
-        keyboardMarkup.addRow(returnMainMenu);
-
-        if (update.message() != null && update.message().contact() != null) {
-            Contact contact = update.callbackQuery().message().contact();
-            String textNumber = contact.phoneNumber();
-
-            if (!textNumber.isEmpty()) {
-                textNumber = textNumber.replace("+", "")
-                        .replace("-", "")
-                        .replace(" ", "");
-
-                if (textNumber.length() < 10) {
-                    throw new RuntimeException("Номер телефона слишком короткий");
-                } else if (textNumber.length() > 11) {
-                    throw new RuntimeException("Номер телефона слишком длинный");
-                } else if (textNumber.charAt(0) != '7' && textNumber.charAt(0) != '8') {
-                    throw new RuntimeException("Номер телефона не начинается с '7' или '8'");
-                }
-
-                Owner owner = new Owner();
-                owner.setChatId(chatId);
-                owner.setPhoneNumber(textNumber);
-                ownerRepository.save(owner);
-
-                logger.info("Успешно добавлено!");
-            }
-        } else {
-            logger.info("Не добавлено!" + messageId);
+        String messageId = String.valueOf(update.callbackQuery().message().messageId());
+        switch (messageId) {
+            default: savePhoneNumberToDatabase(update);
         }
+    }
 
-        bot.execute(new EditMessageText(chatId, messageId, RECORD_CONTACTS));
-        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
+    public void savePhoneNumberToDatabase(Update update) {
 
+
+        long chatId = update.callbackQuery().message().chat().id();
+        String textPhone = update.callbackQuery().message().text();
+
+        Pattern pattern = Pattern.compile("^(\\+7)([0-9]{10})$");
+        Matcher matcher = pattern.matcher(textPhone);
+        if (matcher.matches()) {
+            Owner owner = new Owner();
+            owner.setChatId(chatId);
+            owner.setPhoneNumber(textPhone);
+            ownerRepository.save(owner);
+
+            bot.execute(new SendMessage(chatId, "Номер телефона добавлен!"));
+            logger.info("Успешно добавлео!");
+        } else {
+            logger.info("Не найдено совпадений по шаблону в сообщении: {}", textPhone);
+            bot.execute(new SendMessage(chatId, "Произошла ошибка при добавлении уведомления."));
+        }
     }
 
     public void sendAddressToUser(Update update) {
