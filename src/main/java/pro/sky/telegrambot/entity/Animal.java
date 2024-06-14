@@ -22,6 +22,7 @@ public class Animal {
     }
 
     public Animal() {
+
     }
 
     public Long getId() {
