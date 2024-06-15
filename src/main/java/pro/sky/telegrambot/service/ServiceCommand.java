@@ -5,6 +5,8 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.KeyboardButton;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -377,7 +379,22 @@ public class ServiceCommand {
 
         backMenu(update);
 
-
     }
+//метод для забора контакта через кнопку
+    public void requestContact (Update update){
+        long chatId = update.callbackQuery().message().chat().id();
+        KeyboardButton contactButton = new KeyboardButton("Поделиться контантом").requestContact(true);
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(contactButton)
+                .oneTimeKeyboard(true)
+                .resizeKeyboard(true)
+                .selective(true);
+
+        SendMessage requestMessage = new SendMessage(chatId, "Поделиться контактом.")
+                .replyMarkup(keyboardMarkup);
+
+        bot.execute(requestMessage);
+        backMenu(update);
+    }
+
 }
 
