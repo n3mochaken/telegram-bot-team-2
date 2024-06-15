@@ -119,7 +119,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             });
 
             commandMap.put(CALL_BACK_FOR_RECORD_CONTACTS, chatId -> {
-                service.savePhoneNumber(update);
+                service.requestContact(update);
                 logger.info("Command called - CALL_BACK_FOR_RECORD_CONTACTS");
             });
 
