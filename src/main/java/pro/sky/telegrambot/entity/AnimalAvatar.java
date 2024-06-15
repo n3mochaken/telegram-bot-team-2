@@ -10,6 +10,7 @@ public class AnimalAvatar {
     private String filePath;
     private long fileSize;
     private String mediaType;
+
     private byte[] preview;
     @OneToOne
     @JoinColumn(name = "animal_id")
