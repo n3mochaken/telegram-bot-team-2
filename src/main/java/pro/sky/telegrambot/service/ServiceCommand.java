@@ -1,13 +1,16 @@
 package pro.sky.telegrambot.service;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.Contact;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.*;
+import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.KeyboardButton;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -298,37 +301,49 @@ public class ServiceCommand {
     }
 
     public void savePhoneNumber(Update update) {
-
-        logger.info("Запущен метод savePhoneNumber");
-
+        // НАД ЭТИМ НАДО ПОДУМАТЬ!
         long chatId = update.callbackQuery().message().chat().id();
-        String messageId = String.valueOf(update.callbackQuery().message().messageId());
-        switch (messageId) {
-            default: savePhoneNumberToDatabase(update);
-        }
-    }
+        Integer messageId = update.callbackQuery().message().messageId();
 
-    public void savePhoneNumberToDatabase(Update update) {
+        Pattern pattern = Pattern.compile("\\+7[0-9]{10}");
+        Matcher matcher = pattern.matcher(update.callbackQuery().message().text());
+        if (matcher.find()) {
+            String textNumber = matcher.group();
 
-
-        long chatId = update.callbackQuery().message().chat().id();
-        String textPhone = update.callbackQuery().message().text();
-
-        Pattern pattern = Pattern.compile("^(\\+7)([0-9]{10})$");
-        Matcher matcher = pattern.matcher(textPhone);
-        if (matcher.matches()) {
+            textNumber = textNumber.replace("+", "")
+                    .replace("-", "")
+                    .replace(" ", "");
+            if (textNumber.length() == 10) {
+                textNumber = '7' + textNumber;
+            } else if (textNumber.length() > 11) {
+                throw new RuntimeException("Номер телефона слишком длинный");
+            } else if (textNumber.isEmpty()) {
+                throw new RuntimeException("Введите номер телефефона!");
+            } else if (textNumber.length() < 10) {
+                throw new RuntimeException("Номер телефона слишком короткий");
+            } else if (textNumber.charAt(0) != '7'
+                    && textNumber.charAt(0) != '8') {
+                throw new RuntimeException("Номер телефона не RUS");
+            }
             Owner owner = new Owner();
             owner.setChatId(chatId);
-            owner.setPhoneNumber(textPhone);
+            owner.setPhoneNumber(textNumber);
             ownerRepository.save(owner);
 
-            bot.execute(new SendMessage(chatId, "Номер телефона добавлен!"));
-            logger.info("Успешно добавлео!");
+            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+            InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в главное меню")
+                    .callbackData(CALL_BACK_FOR_MAIN_MENU);
+            keyboardMarkup.addRow(mainMenu);
+
+            bot.execute(new EditMessageText(chatId, messageId, RECORD_CONTACTS));
+            bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
+
+            logger.info("Успешно добавленно!");
         } else {
-            logger.info("Не найдено совпадений по шаблону в сообщении: {}", textPhone);
-            bot.execute(new SendMessage(chatId, "Произошла ошибка при добавлении уведомления."));
+            logger.info("Не найдено совпадений по шаблону в сообщении: {}", messageId);
         }
     }
+
 
     public void sendAddressToUser(Update update) {
 
@@ -339,6 +354,8 @@ public class ServiceCommand {
         bot.execute(message);
 
         backMenu(update);
+
+
     }
 
     public void getContacts(Update update) {
@@ -362,7 +379,22 @@ public class ServiceCommand {
 
         backMenu(update);
 
-
     }
+//метод для забора контакта через кнопку
+    public void requestContact (Update update){
+        long chatId = update.callbackQuery().message().chat().id();
+        KeyboardButton contactButton = new KeyboardButton("Поделиться контантом").requestContact(true);
+        ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(contactButton)
+                .oneTimeKeyboard(true)
+                .resizeKeyboard(true)
+                .selective(true);
+
+        SendMessage requestMessage = new SendMessage(chatId, "Поделиться контактом.")
+                .replyMarkup(keyboardMarkup);
+
+        bot.execute(requestMessage);
+        backMenu(update);
+    }
+
 }
 
