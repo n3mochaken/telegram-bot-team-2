@@ -19,7 +19,6 @@ import java.util.Optional;
  */
 @Service
 public class OwnerService {
-
     private final OwnerRepository ownerRepository;
 
     Logger logger = LoggerFactory.getLogger(OwnerRepository.class);
@@ -133,5 +132,9 @@ public class OwnerService {
     public List<Owner> findAll() {
         logger.info("Вызван метод нахождения списка усыновителей");
         return ownerRepository.findAll();
+    }
+
+    public Optional<Owner> findByChatId(long id) {
+        return ownerRepository.findByChatId(id);
     }
 }
