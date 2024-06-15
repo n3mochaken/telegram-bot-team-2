@@ -127,7 +127,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 // Проверка на наличие фотографии
                 if (update.message().photo() != null) {
                     photoService.processPhoto(update);
-                } else if (update.message().text() != null) {
+                }else if (update.message().contact()!=null){
+                    bot.execute(new SendMessage(update.message().chat().id(),"КУБЛЯ"));
+                }
+                else if (update.message().text() != null) {
                     ownerService.createOwner(update);
                     String message = update.message().text();
                     long chatId = update.message().chat().id();
