@@ -59,50 +59,51 @@ public class ServiceCommand {
 
         logger.info("Взван метод welcomeMenu");
 
-        Long chatId = update.message().chat().id();
+        long chatId = update.message().chat().id();
         Integer messageId = update.message().messageId();
 
         logger.info("МЕСАДЖ ТЕКСТ " + update.message().text());
 
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton menuBtn = new InlineKeyboardButton("Начать").callbackData(CALL_BACK_FOR_MAIN_MENU);
-        keyboardMarkup.addRow(menuBtn);
+        if (ownerRepository.existsById(chatId)) {
+            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+            InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приюте").callbackData(CALL_BACK_FOR_INFO);
+            InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
+            InlineKeyboardButton submitReport = new InlineKeyboardButton("Сдать отчет").callbackData(CALL_BACK_FOR_TO_SUBMIT_THE_REPORT);
 
-        SendMessage message = new SendMessage(update.message().chat().id(), START_TEXT);
-        DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
-        message.replyMarkup(keyboardMarkup);
+            keyboardMarkup.addRow(infoBtn);
+            keyboardMarkup.addRow(infoVolunteer);
+            keyboardMarkup.addRow(submitReport);
 
-        logger.info("сделал клаву");
+            SendMessage message = new SendMessage(update.message().chat().id(), START_TEXT);
+            DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
+            message.replyMarkup(keyboardMarkup);
 
-        bot.execute(message);
-        bot.execute(deleteMessage);
+            logger.info("сделал клаву");
 
-        logger.info("отправил месагу");
+            bot.execute(message);
+            bot.execute(deleteMessage);
+
+            logger.info("отправил месагу");
+        } else {
+            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+            InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приюте").callbackData(CALL_BACK_FOR_INFO);
+            InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
+
+            keyboardMarkup.addRow(infoBtn);
+            keyboardMarkup.addRow(infoVolunteer);
+
+            SendMessage message = new SendMessage(update.message().chat().id(), START_TEXT);
+            DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
+            message.replyMarkup(keyboardMarkup);
+
+            logger.info("сделал клаву");
+
+            bot.execute(message);
+            bot.execute(deleteMessage);
+
+            logger.info("отправил месагу");
+        }
     }
-
-    public void mainMenu(Update update) {
-
-        logger.info("Взван метод mainMenu");
-
-        Long chatId = update.callbackQuery().message().chat().id();
-        Integer messageId = update.callbackQuery().message().messageId();
-
-        logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
-
-        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приюте").callbackData(CALL_BACK_FOR_INFO);
-        InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
-        keyboardMarkup.addRow(infoBtn);
-        keyboardMarkup.addRow(infoVolunteer);
-
-        logger.info("сделал клаву");
-
-        bot.execute(new EditMessageText(chatId, messageId, MAIN_MENU_TEXT));
-        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
-
-        logger.info("отправил месагу");
-    }
-
 
     public void infoMenu(Update update) {
 

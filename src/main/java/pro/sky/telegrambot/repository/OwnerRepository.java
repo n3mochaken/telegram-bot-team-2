@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface OwnerRepository extends JpaRepository<Owner, Long> {
     Optional<Owner> findByChatId(long id);
+
 }

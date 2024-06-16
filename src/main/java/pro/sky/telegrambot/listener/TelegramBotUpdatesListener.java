@@ -81,11 +81,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
             });
 
-            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
-                service.mainMenu(update);
-                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
-            });
-
             commandMap.put(CALL_BACK_FOR_GENERAL_INFO_FILE, chatId -> {
                 service.sendFileToUser(update);
                 logger.info("Command called - CALL_BACK_FOR_GENERAL_INFO_FILE");

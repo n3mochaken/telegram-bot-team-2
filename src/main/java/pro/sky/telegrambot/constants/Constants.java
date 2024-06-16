@@ -51,4 +51,6 @@ public class Constants {
     public static final String CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_DISABLED = "recommendationsDisabled";
     public static final String CALL_BACK_FOR_ADVICE_DOG_HANDLER = "adviceВogHandler";
     public static final String CALL_BACK_FOR_PROVEN_DOG_HANDLERS = "provenDogHandlers";
+
+    public static final String CALL_BACK_FOR_TO_SUBMIT_THE_REPORT = "submitTheReport";
 }
