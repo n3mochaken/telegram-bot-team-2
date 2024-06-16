@@ -8,6 +8,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.entity.Owner;
+import pro.sky.telegrambot.repository.OwnerRepository;
 import pro.sky.telegrambot.service.PhotoService;
 import pro.sky.telegrambot.service.ServiceCommand;
 import pro.sky.telegrambot.service.entities.OwnerService;
@@ -33,12 +35,14 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private ServiceCommand service;
     private PhotoService photoService;
     private OwnerService ownerService;
+    private OwnerRepository ownerRepository;
 
-    public TelegramBotUpdatesListener(TelegramBot bot, ServiceCommand service, PhotoService photoService, OwnerService ownerService) {
+    public TelegramBotUpdatesListener(TelegramBot bot, ServiceCommand service, PhotoService photoService, OwnerService ownerService, OwnerRepository ownerRepository) {
         this.bot = bot;
         this.service = service;
         this.photoService = photoService;
         this.ownerService = ownerService;
+        this.ownerRepository = ownerRepository;
     }
 
     private final Map<String, Consumer<Long>> commandMap = new HashMap<>();
@@ -75,11 +79,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             commandMap.put(CALL_BACK_FOR_VOLUNTEER, chatId -> {
                 service.volunteerCommand(update);
                 logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
-            });
-
-            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
-                service.mainMenu(update);
-                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
             });
 
             commandMap.put(CALL_BACK_FOR_GENERAL_INFO_FILE, chatId -> {
@@ -127,8 +126,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 // Проверка на наличие фотографии
                 if (update.message().photo() != null) {
                     photoService.processPhoto(update);
-                }else if (update.message().contact()!=null){
-                    bot.execute(new SendMessage(update.message().chat().id(),"КУБЛЯ"));
+                } else if (update.message().contact() != null) {
+                    Owner owner = ownerService.findByChatId(update.message().chat().id()).orElseThrow();
+                    String phoneNumber = update.message().contact().phoneNumber();
+                    owner.setPhoneNumber(phoneNumber);
+                    ownerRepository.save(owner);
+                    bot.execute(new SendMessage(update.message().chat().id(), "Номер телефона добавлен - " + phoneNumber));
                 }
                 else if (update.message().text() != null) {
                     ownerService.createOwner(update);
