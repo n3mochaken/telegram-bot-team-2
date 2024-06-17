@@ -18,6 +18,7 @@ import pro.sky.telegrambot.service.entities.OwnerService;
 
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,10 +91,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
             });
 
-            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
-                service.mainMenu(update);
-                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
-            });
+//            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
+//                service.mainMenu(update);
+//                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
+//            });
 
             commandMap.put(CALL_BACK_FOR_GENERAL_INFO_FILE, chatId -> {
                 service.sendFileToUser(update);
@@ -140,7 +141,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 // Проверка на наличие фотографии
                 if (update.message().photo() != null && update.message().caption() !=null) {
                     animalAvatarService.uploadReport(update);
-                    }else if (update.message().contact() != null){
+                }else if (update.message().contact() != null){
                     Owner owner = ownerService.findByChatId(update.message().chat().id()).orElseThrow();
                     String phoneNumber = update.message().contact().phoneNumber();
                     owner.setPhoneNumber(phoneNumber);
