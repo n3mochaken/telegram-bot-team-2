@@ -288,8 +288,24 @@ public class ServiceCommand {
                 Objects.equals(data, CALL_BACK_FOR_SAFETY_RULES) ||
                 Objects.equals(data, CALL_BACK_FOR_TIMING) ||
                 Objects.equals(data, CALL_BACK_FOR_RECORD_CONTACTS)) {
-            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_START_MENU);
             InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку информации").callbackData(CALL_BACK_FOR_INFO);
+            keyboardMarkup1.addRow(backMenuBtn1);
+            keyboardMarkup1.addRow(backMenuBtn2);
+            SendMessage message1 = new SendMessage(update.callbackQuery().message().chat().id(), "Куда тебя перенаправить?");
+            message1.replyMarkup(keyboardMarkup1);
+            bot.execute(message1);
+        }
+
+        if(Objects.equals(data,CALL_BACK_FOR_LOOK_ANIMAL) ||
+                Objects.equals(data,CALL_BACK_FOR_RULES_AND_SHELTER) ||
+                Objects.equals(data,CALL_BACK_FOR_LIST_DOCUMENTS) ||
+                Objects.equals(data,CALL_BACK_FOR_REASONS_FOR_REFUSAL) ||
+                Objects.equals(data,CALL_BACK_FOR_RECORD_CONTACTS) ||
+                Objects.equals(data,CALL_BACK_FOR_RECOMMENDATIONS)
+        ){
+            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_START_MENU);
+            InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку рекомендации").callbackData(CALL_BACK_FOR_RECOMMENDATIONS);
             keyboardMarkup1.addRow(backMenuBtn1);
             keyboardMarkup1.addRow(backMenuBtn2);
             SendMessage message1 = new SendMessage(update.callbackQuery().message().chat().id(), "Куда тебя перенаправить?");

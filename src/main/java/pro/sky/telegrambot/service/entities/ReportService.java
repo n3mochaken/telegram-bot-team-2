@@ -1,17 +1,18 @@
 package pro.sky.telegrambot.service.entities;
 
 
-import com.pengrad.telegrambot.TelegramBot;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.entity.Animal;
+
 import pro.sky.telegrambot.entity.Report;
-import pro.sky.telegrambot.exception.AnimalNotFoundException;
+
 import pro.sky.telegrambot.exception.ReportNotFoundException;
-import pro.sky.telegrambot.repository.AnimalRepository;
+import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
+
 import pro.sky.telegrambot.repository.ReportRepository;
 
 import java.util.List;
@@ -20,11 +21,11 @@ import java.util.List;
 public class ReportService {
 
     private final ReportRepository reportRepository;
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public ReportService(ReportRepository reportRepository, Logger logger) {
+    public ReportService(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
-        this.logger = logger;
+
     }
 
     /**

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.exception.AnimalNotFoundException;
+import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.AnimalRepository;
 
 import javax.transaction.Transactional;
@@ -39,12 +40,12 @@ public class AnimalService {
 
     private TelegramBot bot;
     private final AnimalRepository animalRepository;
-    private final Logger logger;
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public AnimalService(TelegramBot bot, AnimalRepository animalRepository, Logger logger) {
+    public AnimalService(TelegramBot bot, AnimalRepository animalRepository) {
         this.bot = bot;
         this.animalRepository = animalRepository;
-        this.logger = logger;
+
     }
 
     /**

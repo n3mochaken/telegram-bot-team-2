@@ -5,7 +5,6 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
-import liquibase.pro.packaged.O;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,11 +26,9 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Optional;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
-import static liquibase.util.file.FilenameUtils.getExtension;
+
 
 @Service
 @Transactional
@@ -54,7 +51,7 @@ public class AnimalAvatarService {
         this.reportRepository = reportRepository;
         this.avatarRepository = avatarRepository;
         this.bot = bot;
-        this.ownerRepository=ownerRepository;
+        this.ownerRepository = ownerRepository;
     }
 
     public AnimalAvatar findAnimalAvatar(Long animalId) {
@@ -117,13 +114,15 @@ public class AnimalAvatarService {
 
         }
     }
-/**
-Метод принимает
- @param update, если от пользователдя пришло фото с текстом в одном сообщении.
- Сохраняет в репозиторий фото и текст.
- */
 
-    public void uploadReport(Update update)   {
+    /**
+     * Метод принимает
+     *
+     * @param update, если от пользователдя пришло фото с текстом в одном сообщении.
+     *                Сохраняет в репозиторий фото и текст.
+     */
+
+    public void uploadReport(Update update) {
         long chatId = update.message().chat().id();
         logger.info("Получил картинку в сервис");
         String message = update.message().caption();
@@ -166,7 +165,6 @@ public class AnimalAvatarService {
 
         }
     }
-
 
 
 }
