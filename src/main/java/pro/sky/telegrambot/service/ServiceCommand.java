@@ -31,15 +31,15 @@ import static pro.sky.telegrambot.constants.Constants.*;
  */
 @Service
 public class ServiceCommand {
-    private TelegramBot bot;
-    private OwnerRepository ownerRepository;
+    private final TelegramBot bot;
+    private final OwnerRepository ownerRepository;
 
     @Value("${upload.path}")
     private String pathToDocument;
     @Value("${shelter.address}")
     private String link;
 
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
 
     public ServiceCommand(TelegramBot bot, OwnerRepository ownerRepository) {
@@ -338,8 +338,9 @@ public class ServiceCommand {
         backMenu(update);
 
     }
+
     //метод для забора контакта через кнопку
-    public void requestContact(Update update){
+    public void requestContact(Update update) {
         long chatId = update.callbackQuery().message().chat().id();
         KeyboardButton contactButton = new KeyboardButton("Поделиться контантом").requestContact(true);
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(contactButton)
@@ -352,5 +353,7 @@ public class ServiceCommand {
 
         backMenu(update);
     }
+
+
 }
 

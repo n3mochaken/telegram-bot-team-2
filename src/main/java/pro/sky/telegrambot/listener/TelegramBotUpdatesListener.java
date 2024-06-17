@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.repository.ReportRepository;
 import pro.sky.telegrambot.entity.Owner;
 import pro.sky.telegrambot.repository.OwnerRepository;
-import pro.sky.telegrambot.service.PhotoService;
 import pro.sky.telegrambot.service.ServiceCommand;
 import pro.sky.telegrambot.service.entities.AnimalAvatarService;
+import pro.sky.telegrambot.service.entities.AnimalService;
 import pro.sky.telegrambot.service.entities.OwnerService;
 
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,19 +39,22 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private ReportRepository reportRepository;
     private AnimalAvatarService animalAvatarService;
     private OwnerRepository ownerRepository;
+    private AnimalService animalService;
 
     public TelegramBotUpdatesListener(TelegramBot bot,
                                       ServiceCommand service,
                                       OwnerService ownerService,
                                       ReportRepository reportRepository,
                                       AnimalAvatarService animalAvatarService,
-                                      OwnerRepository ownerRepository) {
+                                      OwnerRepository ownerRepository,
+                                      AnimalService animalservice) {
         this.bot = bot;
         this.service = service;
         this.ownerService = ownerService;
         this.reportRepository = reportRepository;
         this.animalAvatarService = animalAvatarService;
         this.ownerRepository = ownerRepository;
+        this.animalService = animalservice;
     }
 
     private final Map<String, Consumer<Long>> commandMap = new HashMap<>();
@@ -135,6 +137,10 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             commandMap.put(CALL_BACK_FOR_RECORD_CONTACTS, chatId -> {
                 service.requestContact(update);
                 logger.info("Command called - CALL_BACK_FOR_RECORD_CONTACTS");
+            });
+            commandMap.put(CALL_BACK_FOR_LOOK_ANIMAL, chatId -> {
+                animalService.sendAnimalInfo(update);
+                logger.info("Command called - CALL_BACK_FOR_LOOK_ANIMAL");
             });
 
             if (update.message() != null) {

@@ -87,6 +87,7 @@ public class AnimalAvatarService {
         animalAvatar.setFileSize(avatar.getSize());
         animalAvatar.setMediaType(avatar.getContentType());
         animalAvatar.setPreview(generateImagePreview(filePath));
+        animal.setPhotoPass(String.valueOf(filePath));
         avatarRepository.save(animalAvatar);
         logger.info("Закончили упражнение");
     }
