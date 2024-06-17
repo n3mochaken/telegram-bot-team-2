@@ -8,12 +8,15 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.repository.ReportRepository;
 import pro.sky.telegrambot.service.PhotoService;
 import pro.sky.telegrambot.service.ServiceCommand;
+import pro.sky.telegrambot.service.entities.AnimalAvatarService;
 import pro.sky.telegrambot.service.entities.OwnerService;
 
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +34,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private TelegramBot bot;
     private ServiceCommand service;
-    private PhotoService photoService;
+    private ReportRepository reportRepository;
+    private AnimalAvatarService animalAvatarService;
     private OwnerService ownerService;
 
-    public TelegramBotUpdatesListener(TelegramBot bot, ServiceCommand service, PhotoService photoService, OwnerService ownerService) {
+    public TelegramBotUpdatesListener(TelegramBot bot, ServiceCommand service, ReportRepository reportRepository, OwnerService ownerService, AnimalAvatarService animalAvatarService) {
+        this.animalAvatarService = animalAvatarService;
         this.bot = bot;
         this.service = service;
-        this.photoService = photoService;
+        this.reportRepository = reportRepository;
         this.ownerService = ownerService;
     }
 
@@ -125,8 +130,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
             if (update.message() != null) {
                 // Проверка на наличие фотографии
-                if (update.message().photo() != null) {
-                    photoService.processPhoto(update);
+                if (update.message().photo() != null && update.message().caption() !=null) {
+                    animalAvatarService.uploadReport(update);
                 }else if (update.message().contact()!=null){
                     bot.execute(new SendMessage(update.message().chat().id(),"КУБЛЯ"));
                 }
