@@ -20,11 +20,11 @@ import java.util.Optional;
 @Service
 public class OwnerService {
     private final OwnerRepository ownerRepository;
+    private final Logger logger;
 
-    Logger logger = LoggerFactory.getLogger(OwnerRepository.class);
-
-    public OwnerService(OwnerRepository ownerRepository) {
+    public OwnerService(OwnerRepository ownerRepository, Logger logger) {
         this.ownerRepository = ownerRepository;
+        this.logger = logger;
     }
 
     /**
@@ -136,5 +136,9 @@ public class OwnerService {
 
     public Optional<Owner> findByChatId(long id) {
         return ownerRepository.findByChatId(id);
+    }
+
+    public boolean existsByChatId(long chatId) {
+        return ownerRepository.existsByChatId(chatId);
     }
 }

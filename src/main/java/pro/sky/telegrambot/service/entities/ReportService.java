@@ -20,11 +20,11 @@ import java.util.List;
 public class ReportService {
 
     private final ReportRepository reportRepository;
+    private final Logger logger;
 
-    private final Logger logger = LoggerFactory.getLogger(AnimalService.class);
-
-    public ReportService(ReportRepository reportRepository) {
+    public ReportService(ReportRepository reportRepository, Logger logger) {
         this.reportRepository = reportRepository;
+        this.logger = logger;
     }
 
     /**
@@ -113,7 +113,6 @@ public class ReportService {
      * @return
      */
     public List<Report> getReports(long id) {
-        Report report = get(id);
         return reportRepository.findAllReportById(id);
     }
 }

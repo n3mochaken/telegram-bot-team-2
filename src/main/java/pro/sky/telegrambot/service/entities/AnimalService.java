@@ -39,12 +39,12 @@ public class AnimalService {
 
     private TelegramBot bot;
     private final AnimalRepository animalRepository;
+    private final Logger logger;
 
-    private final Logger logger = LoggerFactory.getLogger(AnimalService.class);
-
-    public AnimalService(TelegramBot bot, AnimalRepository animalRepository) {
+    public AnimalService(TelegramBot bot, AnimalRepository animalRepository, Logger logger) {
         this.bot = bot;
         this.animalRepository = animalRepository;
+        this.logger = logger;
     }
 
     /**
@@ -55,7 +55,7 @@ public class AnimalService {
      * @return сохраняет сущность
      */
     public Animal create(Animal animal) {
-        //animal.setId(null);
+        animal.setId(null);
         logger.info("Животное создано");
         return animalRepository.save(animal);
     }
