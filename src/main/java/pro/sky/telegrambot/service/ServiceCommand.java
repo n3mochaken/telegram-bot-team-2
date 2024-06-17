@@ -10,19 +10,14 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import pro.sky.telegrambot.entity.Owner;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.OwnerRepository;
 
 import java.io.File;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static pro.sky.telegrambot.constants.Constants.*;
 
@@ -64,7 +59,7 @@ public class ServiceCommand {
 
         logger.info("МЕСАДЖ ТЕКСТ " + update.message().text());
 
-        if (ownerRepository.existsById(chatId)) {
+        if (ownerRepository.existsByChatId(chatId)) {
             InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
             InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приюте").callbackData(CALL_BACK_FOR_INFO);
             InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
@@ -124,7 +119,7 @@ public class ServiceCommand {
 
         InlineKeyboardButton infoBtn6 = new InlineKeyboardButton("Вызвать волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
-        InlineKeyboardButton infoBtn7 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton infoBtn7 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_INFO);
 
         logger.info("сделал кнопки");
 
@@ -161,7 +156,7 @@ public class ServiceCommand {
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_INFO);
         keyboardMarkup.addRow(mainMenu);
 
         logger.info("сделал клаву");
@@ -191,7 +186,7 @@ public class ServiceCommand {
 
         InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
-        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_INFO);
 
         keyboardMarkup.addRow(consultationBtn1);
         keyboardMarkup.addRow(consultationBtn2);
@@ -232,7 +227,7 @@ public class ServiceCommand {
 
         InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
-        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_INFO);
 
         keyboardMarkup.addRow(consultationBtn1);
         keyboardMarkup.addRow(consultationBtn2);
