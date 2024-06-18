@@ -286,8 +286,8 @@ public class ServiceCommand {
         if (Objects.equals(data, CALL_BACK_FOR_ADDRESS) ||
                 Objects.equals(data, CALL_BACK_FOR_CONTACTS) ||
                 Objects.equals(data, CALL_BACK_FOR_SAFETY_RULES) ||
-                Objects.equals(data, CALL_BACK_FOR_TIMING) ||
-                Objects.equals(data, CALL_BACK_FOR_RECORD_CONTACTS)) {
+                Objects.equals(data, CALL_BACK_FOR_TIMING)
+                ) {
             InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_START_MENU);
             InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку информации").callbackData(CALL_BACK_FOR_INFO);
             keyboardMarkup1.addRow(backMenuBtn1);
@@ -321,7 +321,6 @@ public class ServiceCommand {
         long chatId = update.callbackQuery().message().chat().id();
         SendMessage message = new SendMessage(chatId, "Адрес приюта по ссылкне на гугл мапс\n" + link);
         bot.execute(message);
-
         backMenu(update);
 
 
