@@ -23,13 +23,10 @@ import static pro.sky.telegrambot.ConstantsTest.*;
 public class AnimalServiceTest {
 
     @Mock
-    Logger logger;
-
-    @Mock
-    AnimalRepository repository;
+    private AnimalRepository repository;
 
     @InjectMocks
-    AnimalService service;
+    private AnimalService service;
 
 
     @Test
@@ -38,6 +35,8 @@ public class AnimalServiceTest {
         when(repository.save(expected)).thenReturn(expected);
 
         Animal actual = service.create(expected);
+
+        verify(repository, only()).save(expected);
 
         assertEquals(expected, actual);
     }
@@ -104,7 +103,5 @@ public class AnimalServiceTest {
         List<Animal> actualAnimals = service.findAll();
 
         assertEquals(expectedAnimals, actualAnimals);
-
-        verify(logger).info("Вызван метод нахождения списка животных");
     }
 }

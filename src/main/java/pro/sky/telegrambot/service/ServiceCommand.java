@@ -51,53 +51,46 @@ public class ServiceCommand {
      * @param update данные от пользователя
      */
     public void welcomeMenu(Update update) {
-
         logger.info("Взван метод welcomeMenu");
 
-        long chatId = update.message().chat().id();
+        Long chatId = update.message().chat().id();
         Integer messageId = update.message().messageId();
-
         logger.info("МЕСАДЖ ТЕКСТ " + update.message().text());
 
-        if (ownerRepository.existsByChatId(chatId)) {
-            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-            InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приюте").callbackData(CALL_BACK_FOR_INFO);
-            InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
-            InlineKeyboardButton submitReport = new InlineKeyboardButton("Сдать отчет").callbackData(CALL_BACK_FOR_TO_SUBMIT_THE_REPORT);
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton menuBtn = new InlineKeyboardButton("Начать").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        keyboardMarkup.addRow(menuBtn);
 
-            keyboardMarkup.addRow(infoBtn);
-            keyboardMarkup.addRow(infoVolunteer);
-            keyboardMarkup.addRow(submitReport);
+        SendMessage message = new SendMessage(update.message().chat().id(), START_TEXT);
+        DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
+        message.replyMarkup(keyboardMarkup);
 
-            SendMessage message = new SendMessage(update.message().chat().id(), START_TEXT);
-            DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
-            message.replyMarkup(keyboardMarkup);
+        logger.info("сделал клаву");
+        bot.execute(message);
+        bot.execute(deleteMessage);
+        logger.info("отправил месагу");
+    }
 
-            logger.info("сделал клаву");
+    public void mainMenu(Update update) {
+        logger.info("Взван метод mainMenu");
 
-            bot.execute(message);
-            bot.execute(deleteMessage);
+        Long chatId = update.callbackQuery().message().chat().id();
+        Integer messageId = update.callbackQuery().message().messageId();
+        logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
-            logger.info("отправил месагу");
-        } else {
-            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-            InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приюте").callbackData(CALL_BACK_FOR_INFO);
-            InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приюте").callbackData(CALL_BACK_FOR_INFO);
+        InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
+        InlineKeyboardButton submitReport = new InlineKeyboardButton("Сдать отчет").callbackData(CALL_BACK_FOR_TO_SUBMIT_THE_REPORT);
+        keyboardMarkup.addRow(infoBtn);
+        keyboardMarkup.addRow(infoVolunteer);
+        keyboardMarkup.addRow(submitReport);
 
-            keyboardMarkup.addRow(infoBtn);
-            keyboardMarkup.addRow(infoVolunteer);
 
-            SendMessage message = new SendMessage(update.message().chat().id(), START_TEXT);
-            DeleteMessage deleteMessage = new DeleteMessage(chatId, messageId);
-            message.replyMarkup(keyboardMarkup);
-
-            logger.info("сделал клаву");
-
-            bot.execute(message);
-            bot.execute(deleteMessage);
-
-            logger.info("отправил месагу");
-        }
+        logger.info("сделал клаву");
+        bot.execute(new EditMessageText(chatId, messageId, MAIN_MENU_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
+        logger.info("отправил месагу");
     }
 
     public void infoMenu(Update update) {
@@ -119,7 +112,7 @@ public class ServiceCommand {
 
         InlineKeyboardButton infoBtn6 = new InlineKeyboardButton("Вызвать волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
-        InlineKeyboardButton infoBtn7 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_INFO);
+        InlineKeyboardButton infoBtn7 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
 
         logger.info("сделал кнопки");
 
@@ -156,8 +149,12 @@ public class ServiceCommand {
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_INFO);
+        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton consultationMenu = new InlineKeyboardButton("Вернуться в меню консультаций").callbackData(CALL_BACK_FOR_CONSULTATION);
+        InlineKeyboardButton recommendationsMenu = new InlineKeyboardButton("Вернуться в меню рекомендаций").callbackData(CALL_BACK_FOR_RECOMMENDATIONS);
         keyboardMarkup.addRow(mainMenu);
+        keyboardMarkup.addRow(consultationMenu);
+        keyboardMarkup.addRow(recommendationsMenu);
 
         logger.info("сделал клаву");
 
@@ -186,7 +183,7 @@ public class ServiceCommand {
 
         InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
-        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_INFO);
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_INFO);
 
         keyboardMarkup.addRow(consultationBtn1);
         keyboardMarkup.addRow(consultationBtn2);
@@ -227,7 +224,7 @@ public class ServiceCommand {
 
         InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
-        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_INFO);
+        InlineKeyboardButton returnConsultationMenu = new InlineKeyboardButton("Вернуться в меню консультации").callbackData(CALL_BACK_FOR_CONSULTATION);
 
         keyboardMarkup.addRow(consultationBtn1);
         keyboardMarkup.addRow(consultationBtn2);
@@ -236,7 +233,7 @@ public class ServiceCommand {
         keyboardMarkup.addRow(consultationBtn5);
         keyboardMarkup.addRow(consultationBtn6);
         keyboardMarkup.addRow(infoVolunteer);
-        keyboardMarkup.addRow(returnMainMenu);
+        keyboardMarkup.addRow(returnConsultationMenu);
 
         logger.info("сделал кнопки в ряд");
 
@@ -288,7 +285,7 @@ public class ServiceCommand {
                 Objects.equals(data, CALL_BACK_FOR_SAFETY_RULES) ||
                 Objects.equals(data, CALL_BACK_FOR_TIMING)
                 ) {
-            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_START_MENU);
+            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
             InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку информации").callbackData(CALL_BACK_FOR_INFO);
             keyboardMarkup1.addRow(backMenuBtn1);
             keyboardMarkup1.addRow(backMenuBtn2);
@@ -304,7 +301,7 @@ public class ServiceCommand {
                 Objects.equals(data,CALL_BACK_FOR_RECORD_CONTACTS) ||
                 Objects.equals(data,CALL_BACK_FOR_RECOMMENDATIONS)
         ){
-            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_START_MENU);
+            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
             InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку рекомендации").callbackData(CALL_BACK_FOR_RECOMMENDATIONS);
             keyboardMarkup1.addRow(backMenuBtn1);
             keyboardMarkup1.addRow(backMenuBtn2);
@@ -312,6 +309,22 @@ public class ServiceCommand {
             message1.replyMarkup(keyboardMarkup1);
             bot.execute(message1);
         }
+    }
+
+    public void submitToReport(Update update) {
+        logger.info("Запущен метод submitToReport");
+
+        long chatId = update.callbackQuery().message().chat().id();
+        Integer messageId = update.callbackQuery().message().messageId();
+
+        logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
+
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        keyboardMarkup.addRow(returnMainMenu);
+
+        bot.execute(new EditMessageText(chatId, messageId, SUBMIT_REPORT_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
     }
 
     public void sendAddressToUser(Update update) {
