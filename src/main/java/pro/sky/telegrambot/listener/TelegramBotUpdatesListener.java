@@ -83,6 +83,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - /start");
             });
 
+            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
+                service.mainMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
+            });
+
+            commandMap.put(CALL_BACK_FOR_TO_SUBMIT_THE_REPORT, chatId -> {
+                service.submitToReport(update);
+                logger.info("Command called - CALL_BACK_FOR_TO_SUBMIT_THE_REPORT");
+            });
+
             commandMap.put(CALL_BACK_FOR_INFO, chatId -> {
                 service.infoMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_INFO");
@@ -92,11 +102,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 service.volunteerCommand(update);
                 logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
             });
-
-//            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
-//                service.mainMenu(update);
-//                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
-//            });
 
             commandMap.put(CALL_BACK_FOR_GENERAL_INFO_FILE, chatId -> {
                 service.sendFileToUser(update);
@@ -138,6 +143,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 service.requestContact(update);
                 logger.info("Command called - CALL_BACK_FOR_RECORD_CONTACTS");
             });
+
             commandMap.put(CALL_BACK_FOR_LOOK_ANIMAL, chatId -> {
                 animalService.sendAnimalInfo(update);
                 logger.info("Command called - CALL_BACK_FOR_LOOK_ANIMAL");
@@ -145,16 +151,15 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
 
             if (update.message() != null) {
                 // Проверка на наличие фотографии
-                if (update.message().photo() != null && update.message().caption() !=null) {
+                if (update.message().photo() != null && update.message().caption() != null) {
                     animalAvatarService.uploadReport(update);
-                }else if (update.message().contact() != null){
+                } else if (update.message().contact() != null) {
                     Owner owner = ownerService.findByChatId(update.message().chat().id()).orElseThrow();
                     String phoneNumber = update.message().contact().phoneNumber();
                     owner.setPhoneNumber(phoneNumber);
                     ownerRepository.save(owner);
                     bot.execute(new SendMessage(update.message().chat().id(), "Номер телефона добавлен - " + phoneNumber));
-                }
-                else if (update.message().text() != null) {
+                } else if (update.message().text() != null) {
                     ownerService.createOwner(update);
                     String message = update.message().text();
                     long chatId = update.message().chat().id();

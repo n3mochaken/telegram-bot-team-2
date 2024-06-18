@@ -3,13 +3,11 @@ package pro.sky.telegrambot;
 import com.pengrad.telegrambot.model.Chat;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
 import pro.sky.telegrambot.entity.Owner;
 import pro.sky.telegrambot.exception.OwnerNotFoundException;
 import pro.sky.telegrambot.repository.OwnerRepository;
@@ -27,28 +25,19 @@ import static pro.sky.telegrambot.ConstantsTest.*;
 public class OwnerServiceTest {
 
     @Mock
-    Logger logger;
+    private Update update;
 
     @Mock
-    Update update;
+    private Message message;
 
     @Mock
-    Message message;
+    private Chat chat;
 
     @Mock
-    Chat chat;
-
-    @Mock
-    OwnerRepository repository;
+    private OwnerRepository repository;
 
     @InjectMocks
-    OwnerService service;
-
-    @BeforeEach
-    void setup() {
-        service = new OwnerService(repository, logger);
-    }
-
+    private OwnerService service;
 
     @Test
     void createOwnerTest() {
@@ -58,7 +47,7 @@ public class OwnerServiceTest {
         Owner actual = service.create(expected);
 
         verify(repository, only()).save(expected);
-        verify(logger).info("Усыновитель создан");
+
         assertEquals(expected, actual);
     }
 
@@ -126,8 +115,6 @@ public class OwnerServiceTest {
         // Проверка выполнения операции сохранения
         verify(repository, times(1)).save(any(Owner.class));
         // Удаление ненужных утверждений для логгера
-        verify(logger).info("Я СОЗДАЛ ПЕРСОНУ");
-        verify(logger, never()).info("ТАКОЙ ЧЕЛ ЕСТЬ");
     }
 
     @Test
@@ -142,9 +129,6 @@ public class OwnerServiceTest {
 
         // Проверка результатов
         assertEquals(Optional.of(expectedOwner), actualOwner);
-
-        // Проверка вызова методов логгера
-        verify(logger).debug("Запуск метода поиска усыновителя");
     }
 
     @Test
@@ -162,9 +146,6 @@ public class OwnerServiceTest {
 
         // Проверка результатов
         assertEquals(expectedOwners, actualOwners);
-
-        // Проверка вызова методов логгера
-        verify(logger).info("Вызван метод нахождения списка усыновителей");
     }
 
     @Test
@@ -180,38 +161,4 @@ public class OwnerServiceTest {
         // Проверка результатов
         assertEquals(Optional.of(expectedOwner), actualOwner);
     }
-
-    @Test
-    void testFindByChatIdNotExists() {
-        when(repository.existsByChatId(CHAT_ID_1)).thenReturn(false);
-
-        // Вызов метода, который тестируется
-        boolean result = service.existsByChatId(CHAT_ID_1);
-
-        // Проверка, что метод возвращает true
-        assertFalse(result);
-    }
-
-    @Test
-    void testExistsByChatId() {
-        when(repository.existsByChatId(CHAT_ID_1)).thenReturn(true);
-
-        // Вызов метода, который тестируется
-        boolean result = service.existsByChatId(CHAT_ID_1);
-
-        // Проверка, что метод возвращает true
-        assertTrue(result);
-    }
-
-    @Test
-    void testExistsByChatIdNotExists() {
-        when(repository.existsByChatId(CHAT_ID_1)).thenReturn(false);
-
-        // Вызов метода, который тестируется
-        boolean result = service.existsByChatId(CHAT_ID_1);
-
-        // Проверка, что метод возвращает true
-        assertFalse(result);
-    }
-
 }

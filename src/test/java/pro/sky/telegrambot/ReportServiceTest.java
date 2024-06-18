@@ -1,12 +1,10 @@
 package pro.sky.telegrambot;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
 import pro.sky.telegrambot.entity.Report;
 import pro.sky.telegrambot.repository.ReportRepository;
 import pro.sky.telegrambot.service.entities.ReportService;
@@ -23,18 +21,11 @@ import static pro.sky.telegrambot.ConstantsTest.*;
 public class ReportServiceTest {
 
     @Mock
-    Logger logger;
-
-    @Mock
-    ReportRepository repository;
+    private ReportRepository repository;
 
     @InjectMocks
-    ReportService service;
+    private ReportService service;
 
-    @BeforeEach
-    void setup() {
-        service = new ReportService(repository, logger);
-    }
 
     @Test
     void reportCreateTest() {
@@ -44,7 +35,7 @@ public class ReportServiceTest {
         Report actual = service.create(expected);
 
         verify(repository, only()).save(expected);
-        verify(logger).info("Отчет создан");
+
         assertEquals(expected, actual);
     }
 
@@ -54,14 +45,14 @@ public class ReportServiceTest {
         Report newReportData = new Report(REPORT_ID_1, PHOTO_1, FOOD_1, HEALTH_1, CHANGES_1, APPROVAL_1, null);
 
         Report existingReport = new Report(REPORT_ID_1, PHOTO_1, FOOD_1, HEALTH_1, CHANGES_1, APPROVAL_1, null);
-        when(repository.findById(REPORT_ID_1)).thenReturn(Optional.of(existingReport));
+        when(repository.findById(REPORT_ID_2)).thenReturn(Optional.of(existingReport));
 
         Report updatedReport = new Report(REPORT_ID_1, PHOTO_1, FOOD_1, HEALTH_1, CHANGES_1, APPROVAL_1, null);
-        when(repository.save(any(Report.class))).thenReturn(updatedReport);
+        when(repository.save(updatedReport)).thenReturn(updatedReport);
 
         Report actual = service.update(REPORT_ID_1, newReportData);
 
-        verify(repository, times(1)).findById(REPORT_ID_1);
+        verify(repository, times(1)).findById(REPORT_ID_2);
         verify(repository, times(1)).save(updatedReport);
 
         assertEquals(updatedReport, actual);

@@ -132,7 +132,7 @@ public class AnimalService {
 
         Random random = new Random();
         Long randomId = (long) (1 + random.nextInt((int) amountAnimals));
-        logger.info("зарандомил"+randomId);
+        logger.info("зарандомил "+randomId);
 
         Animal animal = animalRepository.getById(randomId);
 
@@ -141,10 +141,6 @@ public class AnimalService {
                 "Кличка: " + animal.getName() +"\n"+
                 "Возраст: " + animal.getAge()+"\n");
         bot.execute(photo);
-
-
-
-
     }
 
 

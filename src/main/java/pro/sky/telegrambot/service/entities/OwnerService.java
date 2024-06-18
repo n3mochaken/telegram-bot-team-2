@@ -138,7 +138,4 @@ public class OwnerService {
         return ownerRepository.findByChatId(id);
     }
 
-    public boolean existsByChatId(long chatId) {
-        return ownerRepository.existsByChatId(chatId);
-    }
 }
