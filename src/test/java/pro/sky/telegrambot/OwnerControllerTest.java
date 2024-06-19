@@ -20,6 +20,7 @@ import pro.sky.telegrambot.service.entities.OwnerService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 import static pro.sky.telegrambot.ConstantsTest.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -75,16 +76,16 @@ public class OwnerControllerTest {
         Owner owner = new Owner(ID_1, CHAT_ID_1, null, PHONE_NUMBER_1, IS_OWNER_1, FULL_NAME_1);
 
         HttpEntity<Owner> entity = new HttpEntity<>(owner);
-        owner.setId(savedOwners.get(0).getId());
+        long ownerId = savedOwners.get(0).getId(); // Получение id из сохраненного owner
 
-        ResponseEntity<Owner> response = restTemplate.exchange("/owner/", HttpMethod.PUT, entity, Owner.class);
+        ResponseEntity<Owner> response = restTemplate.exchange("/owner/" + ownerId, HttpMethod.PUT, entity, Owner.class);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertEquals(owner, response.getBody());
     }
 
     @Test
-    void getOwnersTest() throws JsonProcessingException, JSONException {
+    void getOwnerTest() throws JsonProcessingException, JSONException {
         String expected = mapper.writeValueAsString(savedOwners.get(0));
 
         ResponseEntity<String> response =
@@ -106,5 +107,20 @@ public class OwnerControllerTest {
                 ("http://localhost:" + port + "/student/" + ownerId, Owner.class);
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    void findAllTest() throws Exception {
+        when(service.findAll()).thenReturn(savedOwners);
+
+        ResponseEntity<List<Owner>> response = controller.findAll();
+
+        List<Owner> actualOwners = response.getBody();
+
+        assertEquals(2, actualOwners.size());
+        assertEquals(savedOwners.get(0).getId(), actualOwners.get(0).getId());
+        assertEquals(savedOwners.get(0).getFullName(), actualOwners.get(0).getFullName());
+        assertEquals(savedOwners.get(1).getId(), actualOwners.get(1).getId());
+        assertEquals(savedOwners.get(1).getFullName(), actualOwners.get(1).getFullName());
     }
 }
