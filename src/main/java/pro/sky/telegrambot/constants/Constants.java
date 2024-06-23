@@ -16,7 +16,7 @@ public class Constants {
 
 
     public static final String CALL_BACK_FOR_VOLUNTEER = "volunteer";
-    public static final String VOLUNTEER_TEXT = "Привет я педик!";
+    public static final String VOLUNTEER_TEXT = "Волонтер вызван!";
 
     public static final String CALL_BACK_FOR_MAIN_MENU = "mainMenu";
 

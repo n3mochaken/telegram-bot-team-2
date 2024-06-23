@@ -61,4 +61,12 @@ public class ReportController {
         return reportService.getReports(id);
     }
 
+    @GetMapping("/badreport/{id}")
+    @Operation(summary = "Выслать предупредительную месагу юзеру")
+    public ResponseEntity<String> sendBadNotification(@PathVariable long id){
+        reportService.sendBadNotification(id);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

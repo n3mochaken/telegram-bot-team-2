@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.OwnerRepository;
+import pro.sky.telegrambot.service.entities.ReportService;
 
 import java.io.File;
 import java.util.Objects;
@@ -33,11 +34,13 @@ public class ServiceCommand {
     private String link;
 
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final ReportService reportService;
 
 
-    public ServiceCommand(TelegramBot bot, OwnerRepository ownerRepository) {
+    public ServiceCommand(TelegramBot bot, OwnerRepository ownerRepository, ReportService reportService) {
         this.bot = bot;
         this.ownerRepository = ownerRepository;
+        this.reportService = reportService;
     }
 
 
@@ -218,6 +221,8 @@ public class ServiceCommand {
 
         Long chatId = update.callbackQuery().message().chat().id();
         Integer messageId = update.callbackQuery().message().messageId();
+
+        reportService.sendNotification(update);
 
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
