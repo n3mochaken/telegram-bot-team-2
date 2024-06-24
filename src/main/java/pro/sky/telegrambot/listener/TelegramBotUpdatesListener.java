@@ -8,8 +8,12 @@ import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import pro.sky.telegrambot.service.PhotoService;
+import pro.sky.telegrambot.repository.ReportRepository;
+import pro.sky.telegrambot.entity.Owner;
+import pro.sky.telegrambot.repository.OwnerRepository;
 import pro.sky.telegrambot.service.ServiceCommand;
+import pro.sky.telegrambot.service.entities.AnimalAvatarService;
+import pro.sky.telegrambot.service.entities.AnimalService;
 import pro.sky.telegrambot.service.entities.OwnerService;
 
 
@@ -31,14 +35,26 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
     private TelegramBot bot;
     private ServiceCommand service;
-    private PhotoService photoService;
     private OwnerService ownerService;
+    private ReportRepository reportRepository;
+    private AnimalAvatarService animalAvatarService;
+    private OwnerRepository ownerRepository;
+    private AnimalService animalService;
 
-    public TelegramBotUpdatesListener(TelegramBot bot, ServiceCommand service, PhotoService photoService, OwnerService ownerService) {
+    public TelegramBotUpdatesListener(TelegramBot bot,
+                                      ServiceCommand service,
+                                      OwnerService ownerService,
+                                      ReportRepository reportRepository,
+                                      AnimalAvatarService animalAvatarService,
+                                      OwnerRepository ownerRepository,
+                                      AnimalService animalservice) {
         this.bot = bot;
         this.service = service;
-        this.photoService = photoService;
         this.ownerService = ownerService;
+        this.reportRepository = reportRepository;
+        this.animalAvatarService = animalAvatarService;
+        this.ownerRepository = ownerRepository;
+        this.animalService = animalservice;
     }
 
     private final Map<String, Consumer<Long>> commandMap = new HashMap<>();
@@ -67,6 +83,16 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - /start");
             });
 
+            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
+                service.mainMenu(update);
+                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
+            });
+
+            commandMap.put(CALL_BACK_FOR_TO_SUBMIT_THE_REPORT, chatId -> {
+                service.submitToReport(update);
+                logger.info("Command called - CALL_BACK_FOR_TO_SUBMIT_THE_REPORT");
+            });
+
             commandMap.put(CALL_BACK_FOR_INFO, chatId -> {
                 service.infoMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_INFO");
@@ -75,11 +101,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             commandMap.put(CALL_BACK_FOR_VOLUNTEER, chatId -> {
                 service.volunteerCommand(update);
                 logger.info("Command called - CALL_BACK_FOR_VOLUNTEER");
-            });
-
-            commandMap.put(CALL_BACK_FOR_MAIN_MENU, chatId -> {
-                service.mainMenu(update);
-                logger.info("Command called - CALL_BACK_FOR_MAIN_MENU");
             });
 
             commandMap.put(CALL_BACK_FOR_GENERAL_INFO_FILE, chatId -> {
@@ -123,14 +144,22 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - CALL_BACK_FOR_RECORD_CONTACTS");
             });
 
+            commandMap.put(CALL_BACK_FOR_LOOK_ANIMAL, chatId -> {
+                animalService.sendAnimalInfo(update);
+                logger.info("Command called - CALL_BACK_FOR_LOOK_ANIMAL");
+            });
+
             if (update.message() != null) {
                 // Проверка на наличие фотографии
-                if (update.message().photo() != null) {
-                    photoService.processPhoto(update);
-                }else if (update.message().contact()!=null){
-                    bot.execute(new SendMessage(update.message().chat().id(),"КУБЛЯ"));
-                }
-                else if (update.message().text() != null) {
+                if (update.message().photo() != null && update.message().caption() != null) {
+                    animalAvatarService.uploadReport(update);
+                } else if (update.message().contact() != null) {
+                    Owner owner = ownerService.findByChatId(update.message().chat().id()).orElseThrow();
+                    String phoneNumber = update.message().contact().phoneNumber();
+                    owner.setPhoneNumber(phoneNumber);
+                    ownerRepository.save(owner);
+                    bot.execute(new SendMessage(update.message().chat().id(), "Номер телефона добавлен - " + phoneNumber));
+                } else if (update.message().text() != null) {
                     ownerService.createOwner(update);
                     String message = update.message().text();
                     long chatId = update.message().chat().id();

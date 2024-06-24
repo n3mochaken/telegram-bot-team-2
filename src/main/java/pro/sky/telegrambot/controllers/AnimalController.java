@@ -99,9 +99,4 @@ public class AnimalController {
             is.transferTo(os);
         }
     }
-
-
-
-
-
 }

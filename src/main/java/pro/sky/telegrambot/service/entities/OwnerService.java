@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.entity.Owner;
 import pro.sky.telegrambot.exception.OwnerNotFoundException;
+import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.OwnerRepository;
 
 import java.util.List;
@@ -19,10 +20,8 @@ import java.util.Optional;
  */
 @Service
 public class OwnerService {
-
     private final OwnerRepository ownerRepository;
-
-    Logger logger = LoggerFactory.getLogger(OwnerRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
     public OwnerService(OwnerRepository ownerRepository) {
         this.ownerRepository = ownerRepository;
@@ -134,4 +133,9 @@ public class OwnerService {
         logger.info("Вызван метод нахождения списка усыновителей");
         return ownerRepository.findAll();
     }
+
+    public Optional<Owner> findByChatId(long id) {
+        return ownerRepository.findByChatId(id);
+    }
+
 }

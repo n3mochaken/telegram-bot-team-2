@@ -1,5 +1,10 @@
 package pro.sky.telegrambot.service.entities;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,20 +12,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.entity.AnimalAvatar;
+import pro.sky.telegrambot.entity.Owner;
 import pro.sky.telegrambot.entity.Report;
 import pro.sky.telegrambot.repository.AvatarRepository;
+import pro.sky.telegrambot.repository.OwnerRepository;
+import pro.sky.telegrambot.repository.ReportRepository;
 
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
-import static liquibase.util.file.FilenameUtils.getExtension;
+
 
 @Service
 @Transactional
@@ -32,10 +40,18 @@ public class AnimalAvatarService {
 
     private final AnimalService animalService;
     private final AvatarRepository avatarRepository;
+    private final ReportRepository reportRepository;
+    private final TelegramBot bot;
+    private final OwnerRepository ownerRepository;
 
-    public AnimalAvatarService(AnimalService animalService, AvatarRepository avatarRepository) {
+
+    public AnimalAvatarService(OwnerRepository ownerRepository, AnimalService animalService, AvatarRepository avatarRepository, TelegramBot bot, ReportRepository reportRepository) {
+
         this.animalService = animalService;
+        this.reportRepository = reportRepository;
         this.avatarRepository = avatarRepository;
+        this.bot = bot;
+        this.ownerRepository = ownerRepository;
     }
 
     public AnimalAvatar findAnimalAvatar(Long animalId) {
@@ -68,6 +84,7 @@ public class AnimalAvatarService {
         animalAvatar.setFileSize(avatar.getSize());
         animalAvatar.setMediaType(avatar.getContentType());
         animalAvatar.setPreview(generateImagePreview(filePath));
+        animal.setPhotoPass(String.valueOf(filePath));
         avatarRepository.save(animalAvatar);
         logger.info("Закончили упражнение");
     }
@@ -97,4 +114,57 @@ public class AnimalAvatarService {
 
         }
     }
+
+    /**
+     * Метод принимает
+     *
+     * @param update, если от пользователдя пришло фото с текстом в одном сообщении.
+     *                Сохраняет в репозиторий фото и текст.
+     */
+
+    public void uploadReport(Update update) {
+        long chatId = update.message().chat().id();
+        logger.info("Получил картинку в сервис");
+        String message = update.message().caption();
+
+        var photos = update.message().photo();
+        var largestPhoto = photos[photos.length - 1];
+        var fileId = largestPhoto.fileId();
+
+        GetFile getFileRequest = new GetFile(fileId);
+        GetFileResponse getFileResponse = bot.execute(getFileRequest);
+
+        if (getFileResponse.isOk()) {
+            logger.info("Скачиваю файл");
+            String filePath = getFileResponse.file().filePath();
+            String fileUrl = "https://api.telegram.org/file/bot" + bot.getToken() + "/" + filePath;
+            try (InputStream fileStream = new URL(fileUrl).openStream();
+                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fileStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+
+                Owner owner = ownerRepository.findByChatId(chatId).orElseThrow(null);
+                byte[] photoBytes = outputStream.toByteArray();
+                Report report = new Report();
+                report.setPhoto(photoBytes);
+                report.setOwner(owner);
+                report.setFood(message);
+
+                logger.info("Пытаюсь кинуть в репу");
+                reportRepository.save(report);
+
+                bot.execute(new SendMessage(update.message().chat().id(), "Фото успешно загружено и сохранено."));
+            } catch (Exception e) {
+                logger.error("Ошибка при сохранении фото", e);
+                bot.execute(new SendMessage(update.message().chat().id(), "Ошибка при сохранении репорта."));
+            }
+
+        }
+    }
+
+
 }

@@ -10,18 +10,14 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import pro.sky.telegrambot.entity.Owner;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 import pro.sky.telegrambot.repository.OwnerRepository;
 
 import java.io.File;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static pro.sky.telegrambot.constants.Constants.*;
 
@@ -30,15 +26,15 @@ import static pro.sky.telegrambot.constants.Constants.*;
  */
 @Service
 public class ServiceCommand {
-    private TelegramBot bot;
-    private OwnerRepository ownerRepository;
+    private final TelegramBot bot;
+    private final OwnerRepository ownerRepository;
 
     @Value("${upload.path}")
     private String pathToDocument;
     @Value("${shelter.address}")
     private String link;
 
-    private Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
+    private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
 
     public ServiceCommand(TelegramBot bot, OwnerRepository ownerRepository) {
@@ -55,12 +51,10 @@ public class ServiceCommand {
      * @param update данные от пользователя
      */
     public void welcomeMenu(Update update) {
-
         logger.info("Взван метод welcomeMenu");
 
         Long chatId = update.message().chat().id();
         Integer messageId = update.message().messageId();
-
         logger.info("МЕСАДЖ ТЕКСТ " + update.message().text());
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
@@ -72,36 +66,32 @@ public class ServiceCommand {
         message.replyMarkup(keyboardMarkup);
 
         logger.info("сделал клаву");
-
         bot.execute(message);
         bot.execute(deleteMessage);
-
         logger.info("отправил месагу");
     }
 
     public void mainMenu(Update update) {
-
         logger.info("Взван метод mainMenu");
 
         Long chatId = update.callbackQuery().message().chat().id();
         Integer messageId = update.callbackQuery().message().messageId();
-
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton infoBtn = new InlineKeyboardButton("Информация о приюте").callbackData(CALL_BACK_FOR_INFO);
         InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
+        InlineKeyboardButton submitReport = new InlineKeyboardButton("Сдать отчет").callbackData(CALL_BACK_FOR_TO_SUBMIT_THE_REPORT);
         keyboardMarkup.addRow(infoBtn);
         keyboardMarkup.addRow(infoVolunteer);
+        keyboardMarkup.addRow(submitReport);
+
 
         logger.info("сделал клаву");
-
         bot.execute(new EditMessageText(chatId, messageId, MAIN_MENU_TEXT));
         bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
-
         logger.info("отправил месагу");
     }
-
 
     public void infoMenu(Update update) {
 
@@ -159,8 +149,12 @@ public class ServiceCommand {
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
 
         InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton consultationMenu = new InlineKeyboardButton("Вернуться в меню консультаций").callbackData(CALL_BACK_FOR_CONSULTATION);
+        InlineKeyboardButton recommendationsMenu = new InlineKeyboardButton("Вернуться в меню рекомендаций").callbackData(CALL_BACK_FOR_RECOMMENDATIONS);
         keyboardMarkup.addRow(mainMenu);
+        keyboardMarkup.addRow(consultationMenu);
+        keyboardMarkup.addRow(recommendationsMenu);
 
         logger.info("сделал клаву");
 
@@ -189,7 +183,7 @@ public class ServiceCommand {
 
         InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
-        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_INFO);
 
         keyboardMarkup.addRow(consultationBtn1);
         keyboardMarkup.addRow(consultationBtn2);
@@ -230,7 +224,7 @@ public class ServiceCommand {
 
         InlineKeyboardButton infoVolunteer = new InlineKeyboardButton("Вызов Волонтера").callbackData(CALL_BACK_FOR_VOLUNTEER);
 
-        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        InlineKeyboardButton returnConsultationMenu = new InlineKeyboardButton("Вернуться в меню консультации").callbackData(CALL_BACK_FOR_CONSULTATION);
 
         keyboardMarkup.addRow(consultationBtn1);
         keyboardMarkup.addRow(consultationBtn2);
@@ -239,7 +233,7 @@ public class ServiceCommand {
         keyboardMarkup.addRow(consultationBtn5);
         keyboardMarkup.addRow(consultationBtn6);
         keyboardMarkup.addRow(infoVolunteer);
-        keyboardMarkup.addRow(returnMainMenu);
+        keyboardMarkup.addRow(returnConsultationMenu);
 
         logger.info("сделал кнопки в ряд");
 
@@ -289,7 +283,8 @@ public class ServiceCommand {
         if (Objects.equals(data, CALL_BACK_FOR_ADDRESS) ||
                 Objects.equals(data, CALL_BACK_FOR_CONTACTS) ||
                 Objects.equals(data, CALL_BACK_FOR_SAFETY_RULES) ||
-                Objects.equals(data, CALL_BACK_FOR_TIMING)) {
+                Objects.equals(data, CALL_BACK_FOR_TIMING)
+                ) {
             InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
             InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку информации").callbackData(CALL_BACK_FOR_INFO);
             keyboardMarkup1.addRow(backMenuBtn1);
@@ -298,52 +293,39 @@ public class ServiceCommand {
             message1.replyMarkup(keyboardMarkup1);
             bot.execute(message1);
         }
-    }
 
-    public void savePhoneNumber(Update update) {
-        // НАД ЭТИМ НАДО ПОДУМАТЬ!
-        long chatId = update.callbackQuery().message().chat().id();
-        Integer messageId = update.callbackQuery().message().messageId();
-
-        Pattern pattern = Pattern.compile("\\+7[0-9]{10}");
-        Matcher matcher = pattern.matcher(update.callbackQuery().message().text());
-        if (matcher.find()) {
-            String textNumber = matcher.group();
-
-            textNumber = textNumber.replace("+", "")
-                    .replace("-", "")
-                    .replace(" ", "");
-            if (textNumber.length() == 10) {
-                textNumber = '7' + textNumber;
-            } else if (textNumber.length() > 11) {
-                throw new RuntimeException("Номер телефона слишком длинный");
-            } else if (textNumber.isEmpty()) {
-                throw new RuntimeException("Введите номер телефефона!");
-            } else if (textNumber.length() < 10) {
-                throw new RuntimeException("Номер телефона слишком короткий");
-            } else if (textNumber.charAt(0) != '7'
-                    && textNumber.charAt(0) != '8') {
-                throw new RuntimeException("Номер телефона не RUS");
-            }
-            Owner owner = new Owner();
-            owner.setChatId(chatId);
-            owner.setPhoneNumber(textNumber);
-            ownerRepository.save(owner);
-
-            InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
-            InlineKeyboardButton mainMenu = new InlineKeyboardButton("Вернуться в главное меню")
-                    .callbackData(CALL_BACK_FOR_MAIN_MENU);
-            keyboardMarkup.addRow(mainMenu);
-
-            bot.execute(new EditMessageText(chatId, messageId, RECORD_CONTACTS));
-            bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
-
-            logger.info("Успешно добавленно!");
-        } else {
-            logger.info("Не найдено совпадений по шаблону в сообщении: {}", messageId);
+        if(Objects.equals(data,CALL_BACK_FOR_LOOK_ANIMAL) ||
+                Objects.equals(data,CALL_BACK_FOR_RULES_AND_SHELTER) ||
+                Objects.equals(data,CALL_BACK_FOR_LIST_DOCUMENTS) ||
+                Objects.equals(data,CALL_BACK_FOR_REASONS_FOR_REFUSAL) ||
+                Objects.equals(data,CALL_BACK_FOR_RECORD_CONTACTS) ||
+                Objects.equals(data,CALL_BACK_FOR_RECOMMENDATIONS)
+        ){
+            InlineKeyboardButton backMenuBtn1 = new InlineKeyboardButton("Вернуться в главное меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+            InlineKeyboardButton backMenuBtn2 = new InlineKeyboardButton("Вернуться к списку рекомендации").callbackData(CALL_BACK_FOR_RECOMMENDATIONS);
+            keyboardMarkup1.addRow(backMenuBtn1);
+            keyboardMarkup1.addRow(backMenuBtn2);
+            SendMessage message1 = new SendMessage(update.callbackQuery().message().chat().id(), "Куда тебя перенаправить?");
+            message1.replyMarkup(keyboardMarkup1);
+            bot.execute(message1);
         }
     }
 
+    public void submitToReport(Update update) {
+        logger.info("Запущен метод submitToReport");
+
+        long chatId = update.callbackQuery().message().chat().id();
+        Integer messageId = update.callbackQuery().message().messageId();
+
+        logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
+
+        InlineKeyboardMarkup keyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton returnMainMenu = new InlineKeyboardButton("Вернуться в меню").callbackData(CALL_BACK_FOR_MAIN_MENU);
+        keyboardMarkup.addRow(returnMainMenu);
+
+        bot.execute(new EditMessageText(chatId, messageId, SUBMIT_REPORT_TEXT));
+        bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
+    }
 
     public void sendAddressToUser(Update update) {
 
@@ -352,7 +334,6 @@ public class ServiceCommand {
         long chatId = update.callbackQuery().message().chat().id();
         SendMessage message = new SendMessage(chatId, "Адрес приюта по ссылкне на гугл мапс\n" + link);
         bot.execute(message);
-
         backMenu(update);
 
 
@@ -380,8 +361,9 @@ public class ServiceCommand {
         backMenu(update);
 
     }
-//метод для забора контакта через кнопку
-    public void requestContact (Update update){
+
+    //метод для забора контакта через кнопку
+    public void requestContact(Update update) {
         long chatId = update.callbackQuery().message().chat().id();
         KeyboardButton contactButton = new KeyboardButton("Поделиться контантом").requestContact(true);
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(contactButton)
@@ -389,12 +371,12 @@ public class ServiceCommand {
                 .resizeKeyboard(true)
                 .selective(true);
 
-        SendMessage requestMessage = new SendMessage(chatId, "Поделиться контактом.")
-                .replyMarkup(keyboardMarkup);
+        SendMessage message = new SendMessage(chatId, "\uD83D\uDCF1").replyMarkup(keyboardMarkup);
+        Message responseMessage = bot.execute(message).message();
 
-        bot.execute(requestMessage);
         backMenu(update);
     }
+
 
 }
 
