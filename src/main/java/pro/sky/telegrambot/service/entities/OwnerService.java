@@ -137,5 +137,4 @@ public class OwnerService {
     public Optional<Owner> findByChatId(long id) {
         return ownerRepository.findByChatId(id);
     }
-
 }

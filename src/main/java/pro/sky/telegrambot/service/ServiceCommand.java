@@ -3,10 +3,7 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.KeyboardButton;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.*;
 import com.pengrad.telegrambot.request.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -314,7 +311,7 @@ public class ServiceCommand {
     public void submitToReport(Update update) {
         logger.info("Запущен метод submitToReport");
 
-        long chatId = update.callbackQuery().message().chat().id();
+        Long chatId = update.callbackQuery().message().chat().id();
         Integer messageId = update.callbackQuery().message().messageId();
 
         logger.info("КАЛЛБЭК ТЕКСТ " + update.callbackQuery().data());
@@ -365,18 +362,14 @@ public class ServiceCommand {
     //метод для забора контакта через кнопку
     public void requestContact(Update update) {
         long chatId = update.callbackQuery().message().chat().id();
-        KeyboardButton contactButton = new KeyboardButton("Поделиться контантом").requestContact(true);
+        KeyboardButton contactButton = new KeyboardButton("Поделиться контактом").requestContact(true);
         ReplyKeyboardMarkup keyboardMarkup = new ReplyKeyboardMarkup(contactButton)
                 .oneTimeKeyboard(true)
                 .resizeKeyboard(true)
                 .selective(true);
 
         SendMessage message = new SendMessage(chatId, "\uD83D\uDCF1").replyMarkup(keyboardMarkup);
-        Message responseMessage = bot.execute(message).message();
-
-
+        bot.execute(message).message();
     }
-
-
 }
 
