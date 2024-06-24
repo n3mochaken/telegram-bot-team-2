@@ -374,7 +374,7 @@ public class ServiceCommand {
         SendMessage message = new SendMessage(chatId, "\uD83D\uDCF1").replyMarkup(keyboardMarkup);
         Message responseMessage = bot.execute(message).message();
 
-        backMenu(update);
+
     }
 
 

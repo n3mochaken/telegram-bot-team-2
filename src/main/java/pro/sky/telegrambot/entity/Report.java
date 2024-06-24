@@ -1,22 +1,28 @@
 package pro.sky.telegrambot.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
+@Schema(description = "Сущность Отчетов")
 public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Min(0)
+    @Schema(description = "ID", example = "0")
     private Long id;
 
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(name = "photo")
     private byte[] photo;
+
     private String food;
     private String health;
     private String changes;
