@@ -2,6 +2,7 @@ package pro.sky.telegrambot.configuration;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.DeleteMyCommands;
+import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import org.slf4j.Logger;
@@ -49,11 +50,6 @@ public class TelegramBotConfiguration {
             //дописать логер
             logger.error("Ошибка при дропе апдейтов");
         }
-
         return bot;
-
-
     }
-
-
 }

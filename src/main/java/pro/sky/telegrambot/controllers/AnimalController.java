@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.entity.AnimalAvatar;
-import pro.sky.telegrambot.repository.AnimalRepository;
 import pro.sky.telegrambot.service.entities.AnimalAvatarService;
 import pro.sky.telegrambot.service.entities.AnimalService;
 
