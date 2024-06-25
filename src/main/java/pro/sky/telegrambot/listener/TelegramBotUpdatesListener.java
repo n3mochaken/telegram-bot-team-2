@@ -108,7 +108,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - CALL_BACK_FOR_GENERAL_INFO_FILE");
             });
 
-
             commandMap.put(CALL_BACK_FOR_CONSULTATION, chatId -> {
                 service.consultationMenu(update);
                 logger.info("Command called - CALL_BACK_FOR_CONSULTATION");
@@ -147,6 +146,56 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             commandMap.put(CALL_BACK_FOR_LOOK_ANIMAL, chatId -> {
                 animalService.sendAnimalInfo(update);
                 logger.info("Command called - CALL_BACK_FOR_LOOK_ANIMAL");
+            });
+
+            commandMap.put(CALL_BACK_FOR_TRANSPORTATION_RECOMMENDATIONS, chatId -> {
+                service.transportationRecommendations(update);
+                logger.info("Command called - CALL_BACK_FOR_TRANSPORTATION_RECOMMENDATIONS");
+            });
+
+            commandMap.put(CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_PUPPY, chatId -> {
+                service.homeImprovementRecommendationsPuppy(update);
+                logger.info("Command called - CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_PUPPY");
+            });
+
+            commandMap.put(CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_ADULT_PUPPY, chatId -> {
+                service.homeImprovementRecommendationsAdultPuppy(update);
+                logger.info("Command called - CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_PUPPY");
+            });
+
+            commandMap.put(CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_DISABLED, chatId -> {
+                service.homeImprovementRecommendationsDisabled(update);
+                logger.info("Command called - CALL_BACK_FOR_HOME_IMPROVEMENT_RECOMMENDATIONS_DISABLED");
+            });
+
+            commandMap.put(CALL_BACK_FOR_ADVICE_DOG_HANDLER, chatId -> {
+                service.adviceDogHandler(update);
+                logger.info("Command called - CALL_BACK_FOR_ADVICE_DOG_HANDLER");
+            });
+
+            commandMap.put(CALL_BACK_FOR_LOOK_ANIMAL, chatId -> {
+                service.lookAnimal(update);
+                logger.info("Command called - CALL_BACK_FOR_LOOK_ANIMAL");
+            });
+
+            commandMap.put(CALL_BACK_FOR_RULES_AND_SHELTER, chatId -> {
+                service.rulesAndShelter(update);
+                logger.info("Command called - CALL_BACK_FOR_RULES_AND_SHELTER");
+            });
+
+            commandMap.put(CALL_BACK_FOR_LIST_DOCUMENTS, chatId -> {
+                service.listDocuments(update);
+                logger.info("Command called - CALL_BACK_FOR_LIST_DOCUMENTS");
+            });
+
+            commandMap.put(CALL_BACK_FOR_REASONS_FOR_REFUSAL, chatId -> {
+                service.reasonsForRefusal(update);
+                logger.info("Command called - CALL_BACK_FOR_REASONS_FOR_REFUSAL");
+            });
+
+            commandMap.put(CALL_BACK_FOR_PROVEN_DOG_HANDLERS, chatId -> {
+                service.provenDogHandlers(update);
+                logger.info("Command called - CALL_BACK_FOR_PROVEN_DOG_HANDLERS");
             });
 
             if (update.message() != null) {

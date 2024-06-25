@@ -10,7 +10,7 @@
 
 ## Команды бота:
 
-* /start описание
+* /start стартовое меню
 * /info описание
 
 ...
@@ -23,7 +23,7 @@
 * Git
 * Swagger
 * JUnit
-* Mock
+* Mockito
 * MockMvc
 
 ## Авторы проекта:
