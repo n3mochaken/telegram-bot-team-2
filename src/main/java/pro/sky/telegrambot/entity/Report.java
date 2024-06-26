@@ -15,7 +15,7 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Min(0)
-    @Schema(description = "ID", example = "0")
+    @Schema(description = "ID")
     private Long id;
 
     @Lob

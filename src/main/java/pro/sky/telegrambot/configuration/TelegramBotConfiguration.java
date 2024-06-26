@@ -41,7 +41,7 @@ public class TelegramBotConfiguration {
         bot.execute(new DeleteMyCommands());
 
         try {
-            // Получение всех накопившихся апдейтов
+            // Получение всех накопившихся Updates
             GetUpdates getUpdates = new GetUpdates().limit(100).offset(0);
             GetUpdatesResponse updatesResponse = bot.execute(getUpdates);
             while (!updatesResponse.updates().isEmpty()) {
@@ -51,8 +51,7 @@ public class TelegramBotConfiguration {
                 updatesResponse = bot.execute(getUpdates);
             }
         } catch (Exception e) {
-            //дописать логер
-            logger.error("Ошибка при дропе апдейтов");
+            logger.error("Ошибка при удалении updates");
         }
         return bot;
     }

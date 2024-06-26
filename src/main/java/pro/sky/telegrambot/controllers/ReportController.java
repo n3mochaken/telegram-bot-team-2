@@ -30,7 +30,6 @@ public class ReportController {
         return reportService.create(report);
     }
 
-    // нужен ли этот метод? Может ли Волонтер редактировать поступившие отчеты от усыновителя
     @PutMapping("/{id}")
     @Operation(summary = "Изменение отчета")
     public Report update(@PathVariable long id, @RequestBody Report report) {
@@ -64,10 +63,8 @@ public class ReportController {
 
     @GetMapping("/badreport/{id}")
     @Operation(summary = "Выслать предупредительную месагу юзеру")
-    public ResponseEntity<String> sendBadNotification(@PathVariable long id){
+    public ResponseEntity<String> sendBadNotification(@PathVariable long id) {
         reportService.sendBadNotification(id);
         return ResponseEntity.ok().build();
     }
-
-
 }

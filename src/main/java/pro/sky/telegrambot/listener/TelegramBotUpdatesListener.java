@@ -199,7 +199,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                     animalAvatarService.uploadReport(update);
                 } else if (update.message().contact() != null) {
                     Owner owner = ownerService.findByChatId(update.message().chat().id()).orElseThrow(()
-                    -> new RuntimeException("Owner not found for chatId: " + update.message().chat().id()));
+                            -> new RuntimeException("Owner not found for chatId: " + update.message().chat().id()));
                     String phoneNumber = update.message().contact().phoneNumber();
                     owner.setPhoneNumber(phoneNumber);
                     ownerRepository.save(owner);

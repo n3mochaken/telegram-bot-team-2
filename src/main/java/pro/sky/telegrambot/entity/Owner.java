@@ -14,7 +14,7 @@ public class Owner {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Min(0)
-    @Schema(description = "ID", example = "0")
+    @Schema(description = "ID")
     private Long id;
 
     @Schema(description = "Персональный ID")
@@ -29,7 +29,7 @@ public class Owner {
 
     private boolean isOwner;
 
-    @Schema(description = "Имя-Фамилия", example = "Вячеслав Мавродий")
+    @Schema(description = "Имя-Фамилия")
     private String fullName;
 
     public Owner(Long id, Long chatId, Animal animal, String phoneNumber, boolean isOwner, String fullName) {
