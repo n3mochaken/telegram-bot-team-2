@@ -122,7 +122,8 @@ public class ReportService {
     }
 
     public void sendNotification(Update update) {
-        bot.execute(new SendMessage(update.message().chat().id(), "Тебя позвал чел @" + update.callbackQuery().from().username() + "\n" +
+        Long chatId = update.callbackQuery().message().chat().id();
+        bot.execute(new SendMessage(chatId, "Тебя позвал чел @" + update.callbackQuery().from().username() + "\n" +
                 "Срочно напиши ему, а то тебя уволят!"));
     }
 
