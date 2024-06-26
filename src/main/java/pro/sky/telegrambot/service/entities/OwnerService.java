@@ -104,6 +104,7 @@ public class OwnerService {
         if (findPerson(update.message().chat().id()).isEmpty()) {
             Owner person = new Owner();
             person.setChatId(update.message().chat().id());
+            person.setFullName(update.message().from().firstName()+" "+update.message().from().lastName());
             ownerRepository.save(person);
             logger.info("Я СОЗДАЛ ПЕРСОНУ");
         } else {
