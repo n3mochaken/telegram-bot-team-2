@@ -14,7 +14,6 @@ public class Constants {
 
     public static final String INFO_TEXT = "Вот информация о приютах!";
 
-
     public static final String CALL_BACK_FOR_VOLUNTEER = "volunteer";
     public static final String VOLUNTEER_TEXT = "Волонтер вызван!";
 

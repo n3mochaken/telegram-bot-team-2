@@ -10,7 +10,7 @@ import javax.validation.constraints.Min;
 public class AnimalAvatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "ID", example = "0")
+    @Schema(description = "ID")
     private long id;
 
     private String filePath;
@@ -31,7 +31,9 @@ public class AnimalAvatar {
         this.preview = preview;
         this.animal = animal;
     }
-    public AnimalAvatar(){}
+
+    public AnimalAvatar() {
+    }
 
     public long getId() {
         return id;

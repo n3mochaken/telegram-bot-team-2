@@ -43,9 +43,6 @@ public class ServiceCommand {
         this.reportService = reportService;
     }
 
-
-    // Сommands for the bot
-
     /**
      * Стартует работу бота, предоставляет информацию о приютах и возможность вызова волонтера
      *
@@ -240,7 +237,6 @@ public class ServiceCommand {
         bot.execute(new EditMessageReplyMarkup(chatId, messageId).replyMarkup(keyboardMarkup));
 
         logger.info("отправил месагу");
-
     }
 
     public void consultationMenu(Update update) {

@@ -1,7 +1,6 @@
 package pro.sky.telegrambot.service.entities;
 
 
-
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -122,14 +121,13 @@ public class ReportService {
         return reportRepository.findAllReportById(id);
     }
 
-    public void sendNotification(Update update){
-
-        bot.execute(new SendMessage(536563139,"Тебя позвал чел @"+update.callbackQuery().from().username()+"\n"+
+    public void sendNotification(Update update) {
+        bot.execute(new SendMessage(update.message().chat().id(), "Тебя позвал чел @" + update.callbackQuery().from().username() + "\n" +
                 "Срочно напиши ему, а то тебя уволят!"));
     }
 
-    public void sendBadNotification (long id){
-        bot.execute(new SendMessage(id,"Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо.\n" +
+    public void sendBadNotification(long id) {
+        bot.execute(new SendMessage(id, "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо.\n" +
                 "Пожалуйста, подойди ответственнее к этому занятию.\n" +
                 "В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного"));
     }

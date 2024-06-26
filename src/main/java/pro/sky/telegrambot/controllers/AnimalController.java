@@ -86,16 +86,16 @@ public class AnimalController {
 
     @GetMapping(value = "/{id}/avatar")
     @Operation(summary = "выгрузка аватараш шкуры")
-    public void downloadAvatar(@PathVariable Long id,HttpServletResponse response) throws IOException{
+    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         AnimalAvatar animalAvatar = animalAvatarService.findAnimalAvatar(id);
 
         Path path = Path.of(animalAvatar.getFilePath());
 
-        try(InputStream is = Files.newInputStream(path);
-        OutputStream os = response.getOutputStream();   ){
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
             response.setContentType(animalAvatar.getMediaType());
-            response.setContentLength((int)animalAvatar.getFileSize());
+            response.setContentLength((int) animalAvatar.getFileSize());
             is.transferTo(os);
         }
     }

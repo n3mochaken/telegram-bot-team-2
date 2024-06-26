@@ -16,10 +16,10 @@ public class Animal {
     @Schema(description = "ID", example = "0")
     private Long id;
 
-    @Schema(description = "Имя животного", example = "Зевс")
+    @Schema(description = "Имя животного")
     private String name;
 
-    @Schema(description = "Возраст", example = "3")
+    @Schema(description = "Возраст")
     private int age;
 
     @Schema(description = "Фото животного")

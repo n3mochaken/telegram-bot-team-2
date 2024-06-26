@@ -133,12 +133,11 @@ public class AnimalService {
         Animal animal = animalRepository.findRandomAnimal();
         logger.info("зарандомил");
 
-        SendPhoto photo = new SendPhoto(chatId,new File(animal.getPhotoPass()));
+        SendPhoto photo = new SendPhoto(chatId, new File(animal.getPhotoPass()));
         photo.caption("Вот одно из наших животных.\n" +
-                "Кличка: " + animal.getName() +"\n"+
-                "Возраст: " + animal.getAge()+"\n");
-        
+                "Кличка: " + animal.getName() + "\n" +
+                "Возраст: " + animal.getAge() + "\n");
+
         bot.execute(photo);
     }
-
 }

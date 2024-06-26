@@ -44,7 +44,6 @@ public class AnimalAvatarService {
     private final TelegramBot bot;
     private final OwnerRepository ownerRepository;
 
-
     public AnimalAvatarService(OwnerRepository ownerRepository, AnimalService animalService, AvatarRepository avatarRepository, TelegramBot bot, ReportRepository reportRepository) {
 
         this.animalService = animalService;
@@ -71,8 +70,7 @@ public class AnimalAvatarService {
         try (InputStream is = avatar.getInputStream();
              OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
-             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-
+             BufferedOutputStream bos = new BufferedOutputStream(os, 1024)
         ) {
             bis.transferTo(bos);
             logger.info("СОЗДАЛ ФАЙЛ, ВСЕ ПО КАЙФУ");
@@ -91,7 +89,6 @@ public class AnimalAvatarService {
 
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
-
     }
 
     private byte[] generateImagePreview(Path filePath) throws IOException {
@@ -110,8 +107,6 @@ public class AnimalAvatarService {
             ImageIO.write(preview, getExtension(filePath.getFileName().toString()), baos);
             logger.info("я сделял превью");
             return baos.toByteArray();
-
-
         }
     }
 
@@ -121,7 +116,6 @@ public class AnimalAvatarService {
      * @param update, если от пользователдя пришло фото с текстом в одном сообщении.
      *                Сохраняет в репозиторий фото и текст.
      */
-
     public void uploadReport(Update update) {
         long chatId = update.message().chat().id();
         logger.info("Получил картинку в сервис");
@@ -162,9 +156,6 @@ public class AnimalAvatarService {
                 logger.error("Ошибка при сохранении фото", e);
                 bot.execute(new SendMessage(update.message().chat().id(), "Ошибка при сохранении репорта."));
             }
-
         }
     }
-
-
 }
