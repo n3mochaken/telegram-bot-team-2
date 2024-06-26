@@ -37,7 +37,7 @@ public class Constants {
     public static final String CONSULTATION_TEXT = "Что вам проконсультировать?";
     public static final String CALL_BACK_FOR_CONSULTATION = "consultation";
     public static final String CALL_BACK_FOR_LOOK_ANIMAL = "lookAnimal";
-    public static final String CALL_BACK_FOR_RULES_AND_SHELTER = "lookAnimal";
+    public static final String CALL_BACK_FOR_RULES_AND_SHELTER = "rulesAndShelter";
     public static final String CALL_BACK_FOR_LIST_DOCUMENTS = "listDocuments";
     public static final String CALL_BACK_FOR_REASONS_FOR_REFUSAL = "reasonsForRefusal";
     public static final String CALL_BACK_FOR_RECORD_CONTACTS = "recordСontacts";
