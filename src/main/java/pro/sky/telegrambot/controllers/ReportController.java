@@ -8,6 +8,7 @@ import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.entity.Report;
 import pro.sky.telegrambot.service.entities.ReportService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class ReportController {
 
     @PostMapping
     @Operation(summary = "Добавление отчета")
-    public Report create(@RequestBody Report report) {
+    public Report create(@Valid @RequestBody Report report) {
         return reportService.create(report);
     }
 

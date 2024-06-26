@@ -128,11 +128,7 @@ public class AnimalService {
         logger.info("Вызван метод sendAnimalInfo");
         long chatId = update.callbackQuery().message().chat().id();
         long amountAnimals = animalRepository.count();
-        logger.info("в репе животных" +amountAnimals);
-
-//        Random random = new Random();
-//        Long randomId = (long) (1 + random.nextInt((int) amountAnimals));
-//        logger.info("зарандомил "+randomId);
+        logger.info("в репе животных" + amountAnimals);
 
         Animal animal = animalRepository.findRandomAnimal();
         logger.info("зарандомил");
