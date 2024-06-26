@@ -10,7 +10,6 @@ import javax.validation.constraints.Min;
 public class AnimalAvatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Min(0)
     @Schema(description = "ID", example = "0")
     private long id;
 

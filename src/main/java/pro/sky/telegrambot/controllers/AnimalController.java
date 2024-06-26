@@ -13,6 +13,7 @@ import pro.sky.telegrambot.service.entities.AnimalAvatarService;
 import pro.sky.telegrambot.service.entities.AnimalService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 
 import java.util.List;
@@ -43,7 +44,7 @@ public class AnimalController {
 
     @PostMapping
     @Operation(summary = "Добавление животного в приют")
-    public Animal create(@RequestBody Animal animal) {
+    public Animal create(@Valid @RequestBody Animal animal) {
         return animalService.create(animal);
     }
 

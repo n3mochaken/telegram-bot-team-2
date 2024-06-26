@@ -173,11 +173,6 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 logger.info("Command called - CALL_BACK_FOR_ADVICE_DOG_HANDLER");
             });
 
-            commandMap.put(CALL_BACK_FOR_LOOK_ANIMAL, chatId -> {
-                service.lookAnimal(update);
-                logger.info("Command called - CALL_BACK_FOR_LOOK_ANIMAL");
-            });
-
             commandMap.put(CALL_BACK_FOR_RULES_AND_SHELTER, chatId -> {
                 service.rulesAndShelter(update);
                 logger.info("Command called - CALL_BACK_FOR_RULES_AND_SHELTER");
@@ -203,7 +198,8 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
                 if (update.message().photo() != null && update.message().caption() != null) {
                     animalAvatarService.uploadReport(update);
                 } else if (update.message().contact() != null) {
-                    Owner owner = ownerService.findByChatId(update.message().chat().id()).orElseThrow();
+                    Owner owner = ownerService.findByChatId(update.message().chat().id()).orElseThrow(()
+                    -> new RuntimeException("Owner not found for chatId: " + update.message().chat().id()));
                     String phoneNumber = update.message().contact().phoneNumber();
                     owner.setPhoneNumber(phoneNumber);
                     ownerRepository.save(owner);
