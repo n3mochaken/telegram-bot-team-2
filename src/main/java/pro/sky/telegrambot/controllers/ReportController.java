@@ -58,6 +58,7 @@ public class ReportController {
     @GetMapping("/{id}/reports")
     @Operation(summary = "Показать все отчеты усыновителя")
     public List<Report> getReports(@PathVariable long id) {
+
         return reportService.getReports(id);
     }
 

@@ -38,6 +38,7 @@ public class OwnerController {
     @PutMapping("/{id}")
     @Operation(summary = "Изменение данных об усыновителе")
     public Owner update(@PathVariable long id, @RequestBody Owner owner) {
+
         return ownerService.update(id, owner);
     }
 

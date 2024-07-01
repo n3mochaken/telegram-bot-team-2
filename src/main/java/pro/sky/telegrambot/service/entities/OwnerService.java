@@ -54,6 +54,7 @@ public class OwnerService {
                     oldOwner.setAnimal(owner.getAnimal());
                     oldOwner.setPhoneNumber(owner.getPhoneNumber());
                     oldOwner.setFullName(owner.getFullName());
+                    oldOwner.setOwner(owner.isOwner());
                     logger.info("Изменены данный о усыновителе");
                     return ownerRepository.save(oldOwner);
                 })
