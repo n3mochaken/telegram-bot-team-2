@@ -1,6 +1,7 @@
 package pro.sky.telegrambot.configuration;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.DeleteMyCommands;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
@@ -10,7 +11,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import pro.sky.telegrambot.service.entities.AnimalService;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static pro.sky.telegrambot.constants.Constants.CALL_BACK_FOR_MAIN_MENU;
 
 @Configuration
 @PropertySource("application.properties")
@@ -36,7 +41,7 @@ public class TelegramBotConfiguration {
         bot.execute(new DeleteMyCommands());
 
         try {
-            // Получение всех накопившихся апдейтов
+            // Получение всех накопившихся Updates
             GetUpdates getUpdates = new GetUpdates().limit(100).offset(0);
             GetUpdatesResponse updatesResponse = bot.execute(getUpdates);
             while (!updatesResponse.updates().isEmpty()) {
@@ -46,14 +51,8 @@ public class TelegramBotConfiguration {
                 updatesResponse = bot.execute(getUpdates);
             }
         } catch (Exception e) {
-            //дописать логер
-            logger.error("Ошибка при дропе апдейтов");
+            logger.error("Ошибка при удалении updates");
         }
-
         return bot;
-
-
     }
-
-
 }

@@ -8,6 +8,7 @@ import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.entity.Report;
 import pro.sky.telegrambot.service.entities.ReportService;
 
+import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,11 +26,10 @@ public class ReportController {
 
     @PostMapping
     @Operation(summary = "Добавление отчета")
-    public Report create(@RequestBody Report report) {
+    public Report create(@Valid @RequestBody Report report) {
         return reportService.create(report);
     }
 
-    // нужен ли этот метод? Может ли Волонтер редактировать поступившие отчеты от усыновителя
     @PutMapping("/{id}")
     @Operation(summary = "Изменение отчета")
     public Report update(@PathVariable long id, @RequestBody Report report) {
@@ -58,7 +58,14 @@ public class ReportController {
     @GetMapping("/{id}/reports")
     @Operation(summary = "Показать все отчеты усыновителя")
     public List<Report> getReports(@PathVariable long id) {
+
         return reportService.getReports(id);
     }
 
+    @GetMapping("/badreport/{id}")
+    @Operation(summary = "Выслать предупредительную месагу юзеру")
+    public ResponseEntity<String> sendBadNotification(@PathVariable long id) {
+        reportService.sendBadNotification(id);
+        return ResponseEntity.ok().build();
+    }
 }

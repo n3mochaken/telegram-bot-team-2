@@ -10,6 +10,7 @@ import pro.sky.telegrambot.entity.Owner;
 import pro.sky.telegrambot.repository.OwnerRepository;
 import pro.sky.telegrambot.service.entities.OwnerService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -30,13 +31,14 @@ public class OwnerController {
 
     @PostMapping
     @Operation(summary = "Добавление усыновителя")
-    public Owner create(@RequestBody Owner owner) {
+    public Owner create(@Valid @RequestBody Owner owner) {
         return ownerService.create(owner);
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Изменение данных об усыновителе")
     public Owner update(@PathVariable long id, @RequestBody Owner owner) {
+
         return ownerService.update(id, owner);
     }
 

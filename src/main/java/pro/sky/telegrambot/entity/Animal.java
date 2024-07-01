@@ -1,17 +1,28 @@
 package pro.sky.telegrambot.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.util.Objects;
 
 @Entity
+@Schema(description = "Сущность Животного")
 public class Animal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Min(0)
+    @Schema(description = "ID", example = "0")
     private Long id;
 
+    @Schema(description = "Имя животного")
     private String name;
+
+    @Schema(description = "Возраст")
     private int age;
+
+    @Schema(description = "Фото животного")
     private String photoPass;
 
     public Animal(Long id, String name, int age, String photoPass) {

@@ -1,21 +1,35 @@
 package pro.sky.telegrambot.entity;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.util.Objects;
 
 @Entity
+@Schema(description = "Сущность Усыновителя")
 public class Owner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Min(0)
+    @Schema(description = "ID")
     private Long id;
+
+    @Schema(description = "Персональный ID")
     private Long chatId;
+
     @OneToOne
     @JoinColumn(name = "animal_id")
     private Animal animal;
+
+    @Schema(description = "Номер телефона", example = "+79112223456")
     private String phoneNumber;
+
     private boolean isOwner;
+
+    @Schema(description = "Имя-Фамилия")
     private String fullName;
 
     public Owner(Long id, Long chatId, Animal animal, String phoneNumber, boolean isOwner, String fullName) {
