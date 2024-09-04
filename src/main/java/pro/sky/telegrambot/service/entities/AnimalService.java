@@ -128,62 +128,16 @@ public class AnimalService {
         logger.info("Вызван метод sendAnimalInfo");
         long chatId = update.callbackQuery().message().chat().id();
         long amountAnimals = animalRepository.count();
-        logger.info("в репе животных" +amountAnimals);
+        logger.info("в репе животных" + amountAnimals);
 
-        Random random = new Random();
-        Long randomId = (long) (1 + random.nextInt((int) amountAnimals));
-        logger.info("зарандомил "+randomId);
+        Animal animal = animalRepository.findRandomAnimal();
+        logger.info("зарандомил");
 
-        Animal animal = animalRepository.getById(randomId);
-
-        SendPhoto photo = new SendPhoto(chatId,new File(animal.getPhotoPass()));
+        SendPhoto photo = new SendPhoto(chatId, new File(animal.getPhotoPass()));
         photo.caption("Вот одно из наших животных.\n" +
-                "Кличка: " + animal.getName() +"\n"+
-                "Возраст: " + animal.getAge()+"\n");
+                "Кличка: " + animal.getName() + "\n" +
+                "Возраст: " + animal.getAge() + "\n");
+
         bot.execute(photo);
     }
-
-
-//    /**
-//     * Метод на входе принимает ид животного и файл, считывает файл,
-//     * сохраняет его на диск и записывает путь к нему в рупозиторий{@link AnimalRepository}
-//     *
-//     * @param id     животного из репозитория
-//     * @param avatar фотка,которую хотим прикрепить
-//     * @throws IOException дефолт
-//     */
-//    public void uploadAvatar(Long id, MultipartFile avatar) throws IOException {
-//
-//        //добавить логи методу
-//        Animal animal = animalRepository.getById(id);
-//
-//        Path filePath = Path.of(avatarPath, id + "." + getExtension(avatar.getOriginalFilename()));
-//        Files.deleteIfExists(filePath);
-//        try (InputStream is = avatar.getInputStream();
-//             OutputStream os = Files.newOutputStream(filePath, CREATE_NEW);
-//             BufferedInputStream bis = new BufferedInputStream(is, 1024);
-//             BufferedOutputStream bos = new BufferedOutputStream(os, 1024);
-//
-//        ) {
-//            bis.transferTo(bos);
-//        }
-//
-//        animal.setPhotoPass(filePath.toString());
-//        animalRepository.save(animal);
-//    }
-
-//    /**
-//     * Вспомогательный метод для определения разрешения загруженного фото
-//     *
-//     * @param fileName полученный от юзера файл
-//     * @return разрешение файла
-//     */
-//    private String getExtension(String fileName) {
-//        return fileName.substring(fileName.lastIndexOf(".") + 1);
-//    }
-
-
-    //метод нахождения всех усыновленных животных
-    // метод нахождения животных на испытательном сроке
-
 }

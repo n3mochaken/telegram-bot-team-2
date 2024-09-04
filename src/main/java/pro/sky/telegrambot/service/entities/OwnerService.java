@@ -54,6 +54,7 @@ public class OwnerService {
                     oldOwner.setAnimal(owner.getAnimal());
                     oldOwner.setPhoneNumber(owner.getPhoneNumber());
                     oldOwner.setFullName(owner.getFullName());
+                    oldOwner.setOwner(owner.isOwner());
                     logger.info("Изменены данный о усыновителе");
                     return ownerRepository.save(oldOwner);
                 })
@@ -104,6 +105,7 @@ public class OwnerService {
         if (findPerson(update.message().chat().id()).isEmpty()) {
             Owner person = new Owner();
             person.setChatId(update.message().chat().id());
+            person.setFullName(update.message().from().firstName() + " " + update.message().from().lastName());
             ownerRepository.save(person);
             logger.info("Я СОЗДАЛ ПЕРСОНУ");
         } else {
@@ -112,6 +114,7 @@ public class OwnerService {
     }
 
 //вопросик по двум методам ^выше 4стандартных метода круд (с возвращаемым овнером) \/ниже методы написанные без возвращаемого значения
+
     /**
      * Возвращает пользователя по его индентификатору
      * Используется метод репозитория {@link JpaRepository#findById(Object)}
@@ -137,5 +140,4 @@ public class OwnerService {
     public Optional<Owner> findByChatId(long id) {
         return ownerRepository.findByChatId(id);
     }
-
 }

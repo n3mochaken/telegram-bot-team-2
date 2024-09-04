@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegrambot.entity.Animal;
 import pro.sky.telegrambot.entity.AnimalAvatar;
-import pro.sky.telegrambot.repository.AnimalRepository;
 import pro.sky.telegrambot.service.entities.AnimalAvatarService;
 import pro.sky.telegrambot.service.entities.AnimalService;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class AnimalController {
 
     @PostMapping
     @Operation(summary = "Добавление животного в приют")
-    public Animal create(@RequestBody Animal animal) {
+    public Animal create(@Valid @RequestBody Animal animal) {
         return animalService.create(animal);
     }
 
@@ -86,16 +86,16 @@ public class AnimalController {
 
     @GetMapping(value = "/{id}/avatar")
     @Operation(summary = "выгрузка аватараш шкуры")
-    public void downloadAvatar(@PathVariable Long id,HttpServletResponse response) throws IOException{
+    public void downloadAvatar(@PathVariable Long id, HttpServletResponse response) throws IOException {
         AnimalAvatar animalAvatar = animalAvatarService.findAnimalAvatar(id);
 
         Path path = Path.of(animalAvatar.getFilePath());
 
-        try(InputStream is = Files.newInputStream(path);
-        OutputStream os = response.getOutputStream();   ){
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
             response.setContentType(animalAvatar.getMediaType());
-            response.setContentLength((int)animalAvatar.getFileSize());
+            response.setContentLength((int) animalAvatar.getFileSize());
             is.transferTo(os);
         }
     }

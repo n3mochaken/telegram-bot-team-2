@@ -1,12 +1,18 @@
 package pro.sky.telegrambot.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 @Entity
+@Schema(description = "Сущность Фото")
 public class AnimalAvatar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID")
     private long id;
+
     private String filePath;
     private long fileSize;
     private String mediaType;
@@ -25,7 +31,9 @@ public class AnimalAvatar {
         this.preview = preview;
         this.animal = animal;
     }
-    public AnimalAvatar(){}
+
+    public AnimalAvatar() {
+    }
 
     public long getId() {
         return id;

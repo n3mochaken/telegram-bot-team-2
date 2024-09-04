@@ -1,7 +1,9 @@
 package pro.sky.telegrambot.service.entities;
 
 
-
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,6 +15,7 @@ import pro.sky.telegrambot.entity.Report;
 import pro.sky.telegrambot.exception.ReportNotFoundException;
 import pro.sky.telegrambot.listener.TelegramBotUpdatesListener;
 
+import pro.sky.telegrambot.repository.OwnerRepository;
 import pro.sky.telegrambot.repository.ReportRepository;
 
 import java.util.List;
@@ -21,10 +24,14 @@ import java.util.List;
 public class ReportService {
 
     private final ReportRepository reportRepository;
+    private  final OwnerRepository ownerRepository;
+    private final TelegramBot bot;
     private final Logger logger = LoggerFactory.getLogger(TelegramBotUpdatesListener.class);
 
-    public ReportService(ReportRepository reportRepository) {
+    public ReportService(ReportRepository reportRepository, OwnerRepository ownerRepository, TelegramBot bot) {
         this.reportRepository = reportRepository;
+        this.ownerRepository = ownerRepository;
+        this.bot = bot;
 
     }
 
@@ -114,6 +121,21 @@ public class ReportService {
      * @return
      */
     public List<Report> getReports(long id) {
-        return reportRepository.findAllReportById(id);
+        return reportRepository.findAllByOwnerId(id);
+    }
+
+    public void sendNotification(Update update) {
+        Long chatId = 1930649582l;
+        Long chatId1 = 536563139l;
+        bot.execute(new SendMessage(chatId, "Тебя позвал чел @" + update.callbackQuery().from().username() + "\n" +
+                "Срочно напиши ему, а то тебя уволят!"));
+        bot.execute(new SendMessage(chatId1, "Тебя позвал чел @" + update.callbackQuery().from().username() + "\n" +
+                "Срочно напиши ему, а то тебя уволят!"));
+    }
+
+    public void sendBadNotification(long id) {
+        bot.execute(new SendMessage(ownerRepository.findChatIdById(id), "Дорогой усыновитель, мы заметили, что ты заполняешь отчет не так подробно, как необходимо.\n" +
+                "Пожалуйста, подойди ответственнее к этому занятию.\n" +
+                "В противном случае волонтеры приюта будут обязаны самолично проверять условия содержания животного"));
     }
 }
